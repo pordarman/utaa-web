@@ -224,6 +224,130 @@
 
     .alert-box p strong { color: var(--accent3); }
 
+    /* ── ABONELİK BİLGİ BANNER ── */
+    .sub-info-box {
+      background: rgba(59,130,246,0.09);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border: 1px solid rgba(59,130,246,0.28);
+      border-radius: 14px;
+      padding: 18px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .sub-info-box .sub-icon {
+      flex-shrink: 0;
+      font-size: 1.6em;
+    }
+
+    .sub-info-box .sub-text { flex: 1; }
+
+    .sub-info-box .sub-text strong.title {
+      display: block;
+      font-size: 0.95em;
+      color: #6ea8fe;
+      margin-bottom: 6px;
+    }
+
+    .sub-info-box .sub-text p {
+      font-size: 0.82em;
+      color: #9bbef0;
+      line-height: 1.6;
+    }
+
+    .sub-info-box .sub-text ol {
+      font-size: 0.82em;
+      color: #9bbef0;
+      line-height: 1.9;
+      padding-left: 20px;
+      margin-top: 6px;
+    }
+
+    .sub-info-box .sub-text ol strong { color: #cfe0fb; }
+
+    .sub-info-box .sub-cta {
+      flex-shrink: 0;
+      text-decoration: none;
+      background: #3b82f6;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85em;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+    .sub-info-box .sub-cta:hover { opacity: 0.88; }
+
+    /* ── İZİN YARDIMI (açılır bölüm) ── */
+    .perm-help {
+      margin-top: 12px;
+    }
+
+    .perm-help > summary {
+      cursor: pointer;
+      font-size: 0.82em;
+      color: #6ea8fe;
+      font-weight: 600;
+      list-style: none;
+      user-select: none;
+    }
+    .perm-help > summary::-webkit-details-marker { display: none; }
+    .perm-help > summary::before {
+      content: "▸ ";
+      display: inline-block;
+      transition: transform 0.15s;
+    }
+    .perm-help[open] > summary::before { content: "▾ "; }
+
+    .perm-help .perm-grid {
+      display: flex;
+      gap: 14px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .perm-help .perm-col {
+      flex: 1;
+      min-width: 220px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+
+    .perm-help .perm-col h4 {
+      font-size: 0.85em;
+      color: #cfe0fb;
+      margin-bottom: 8px;
+    }
+
+    .perm-help .perm-col ol {
+      font-size: 0.78em;
+      color: #9bbef0;
+      line-height: 1.75;
+      padding-left: 18px;
+    }
+    .perm-help .perm-col ol strong { color: #cfe0fb; }
+
+    .perm-help .perm-fix {
+      font-size: 0.76em;
+      color: #8aa7cf;
+      line-height: 1.6;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255,255,255,0.1);
+    }
+    .perm-help .perm-fix strong { color: #cfe0fb; }
+
+    @media (max-width: 720px) {
+      .sub-info-box { flex-direction: column; text-align: center; }
+    }
+
     /* ── SEARCH ── */
     .search-wrapper {
       margin-bottom: 28px;
@@ -526,6 +650,57 @@
       <p><strong>Dikkat:</strong> Teams Gruplarındaki Slaytları atmayın. Öğretim Görevlilerinin kendi paylaştıkları sınavlar ve quizler harici içerikler silinecektir.</p>
     </div>
 
+    <!-- ABONELİK GEREKSİNİMİ BİLGİLENDİRMESİ -->
+    <div class="sub-info-box">
+      <div class="sub-icon">🔔</div>
+      <div class="sub-text">
+        <strong class="title">Dosya indirmek için abonelik gerekli</strong>
+        <p>Buradaki notları indirebilmek için önce <strong style="color:#cfe0fb">Kayıp Eşya</strong> sayfasındaki bildirimlere abone olmalısın. Tek seferlik bir işlem:</p>
+        <ol>
+          <li><strong>Kayıp Eşya</strong> sayfasını aç.</li>
+          <li>Sağ üstteki <strong>🔔 zil ikonuna</strong> tıkla ve bildirim iznini ver.</li>
+          <li>Zil maviye dönünce abonelik tamamdır — buraya dönüp notları indirebilirsin.</li>
+        </ol>
+        <p style="margin-top:6px;">Not: Her indirme <strong style="color:#cfe0fb">1 kredi</strong> harcar; kredini not yükleyerek kazanabilirsin.</p>
+
+        <details class="perm-help">
+          <summary>Bildirim izni nasıl verilir? (iPhone / Android)</summary>
+          <div class="perm-grid">
+            <div class="perm-col">
+              <h4>🍎 iPhone / iPad</h4>
+              <ol>
+                <li>Siteyi <strong>Safari</strong> ile aç (iOS 16.4+ gerekir).</li>
+                <li>Alttaki <strong>Paylaş</strong> butonuna (⬆ ikonu) dokun.</li>
+                <li>Menüden <strong>"Ana Ekrana Ekle"</strong> → <strong>"Ekle"</strong>.</li>
+                <li>Ana ekrana eklenen <strong>uygulama ikonundan</strong> siteyi aç.</li>
+                <li>Kayıp Eşya sayfasında <strong>🔔 zile</strong> dokun, <strong>"İzin Ver"</strong> de.</li>
+              </ol>
+              <div class="perm-fix">
+                <strong>İzni reddettiysen:</strong> Telefon <strong>Ayarlar → Bildirimler</strong> →
+                bu uygulamayı bul → bildirimleri aç. iPhone'da site tarayıcıdan değil,
+                yalnızca ana ekrana eklenince bildirim alır.
+              </div>
+            </div>
+            <div class="perm-col">
+              <h4>🤖 Android</h4>
+              <ol>
+                <li>Siteyi <strong>Chrome</strong> ile aç.</li>
+                <li>Kayıp Eşya sayfasında <strong>🔔 zil ikonuna</strong> dokun.</li>
+                <li>Çıkan kutuda <strong>"İzin Ver"</strong>e dokun.</li>
+                <li>Zil <strong>maviye</strong> dönerse abonelik tamamdır.</li>
+              </ol>
+              <div class="perm-fix">
+                <strong>Kutu çıkmıyorsa / reddettiysen:</strong> Chrome adres çubuğundaki
+                <strong>🔒 kilit</strong> simgesine dokun → <strong>İzinler → Bildirimler</strong> → "İzin ver".
+                Sayfayı yenileyip zile tekrar dokun.
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+      <a href="/kayiplar" class="sub-cta">🔔 Abone Ol</a>
+    </div>
+
     <!-- SEARCH -->
     <div class="search-wrapper">
       <span class="search-icon">🔍</span>
@@ -668,7 +843,9 @@
         if (response.status === 403) {
           const data = await response.json();
           if (data.message?.includes('abone')) {
-            alert("🔔 Erişim Kısıtlı!\n\nBu dosyayı indirebilmek için önce kayıp ilanı bildirimlerine abone olmalısınız.");
+            if (confirm("🔔 Erişim Kısıtlı!\n\nBu dosyayı indirebilmek için önce Kayıp Eşya sayfasındaki bildirimlere abone olmalısın.\n\nŞimdi abonelik sayfasına gitmek ister misin?")) {
+              window.location.href = '/kayiplar';
+            }
           } else {
             alert("⚠️ Yetersiz Kredi!\n\nBakiyenizde yeterli kredi yok (Gerekli: 1 Kredi). Lütfen not yükleyerek kredi kazanın.");
           }
