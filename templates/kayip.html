@@ -388,10 +388,175 @@
             cursor: pointer;
         }
 
+        /* --- BANNER YARDIM LİNKİ --- */
+        .banner-help-link {
+            display: inline-block;
+            margin-top: 6px;
+            color: var(--primary);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .banner-help-link:hover { text-decoration: underline; }
+
+        /* --- İZİN YARDIM MODALI --- */
+        .help-modal {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 28px;
+            width: 560px;
+            max-width: 92%;
+            max-height: 88vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .help-modal h2 {
+            font-size: 1.25rem;
+            margin-bottom: 6px;
+        }
+
+        .help-modal .help-sub {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .help-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .help-tab {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid #333;
+            color: var(--text-muted);
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .help-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .help-panel { display: none; }
+        .help-panel.active { display: block; }
+
+        .help-step {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .help-step .step-num {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .help-step .step-body {
+            font-size: 0.9rem;
+            line-height: 1.55;
+            color: var(--text-muted);
+            padding-top: 3px;
+        }
+        .help-step .step-body strong { color: #fff; }
+
+        .help-note {
+            background: var(--bg-input);
+            border-left: 3px solid var(--primary);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin-top: 6px;
+        }
+        .help-note strong { color: #fff; }
+
+        .help-key {
+            display: inline-block;
+            background: var(--bg-input);
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 1px 7px;
+            font-size: 0.82rem;
+            color: #fff;
+        }
+
+        /* --- ABONELİK BİLGİ BANNER --- */
+        .info-banner {
+            background: linear-gradient(90deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05));
+            border: 1px solid rgba(59,130,246,0.35);
+            border-radius: var(--border-radius);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .info-banner .banner-icon {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(59,130,246,0.2);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .info-banner .banner-text { flex: 1; }
+
+        .info-banner .banner-text strong {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .info-banner .banner-text p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .info-banner .inline-bell {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .info-banner.subscribed-banner {
+            background: linear-gradient(90deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05));
+            border-color: rgba(16,185,129,0.35);
+        }
+        .info-banner.subscribed-banner .banner-icon {
+            background: rgba(16,185,129,0.2);
+            color: var(--success);
+        }
+
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 15px; }
             .search-bar { width: 100%; }
             .header-actions { width: 100%; justify-content: space-between; }
+            .info-banner { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -415,6 +580,27 @@
     </header>
 
     <div class="main-container">
+
+        <!-- Abonelik Bilgilendirme Banner'ı -->
+        <div class="info-banner" id="aboneBanner">
+            <div class="banner-icon"><i class="fa-solid fa-bell"></i></div>
+            <div class="banner-text">
+                <strong>Ders notlarını indirmek mi istiyorsun?</strong>
+                <p>
+                    Ders Notları sayfasından dosya indirebilmek için önce kayıp ilanı
+                    bildirimlerine abone olman gerekiyor. Sağ üstteki
+                    <span class="inline-bell"><i class="fa-solid fa-bell"></i> zil ikonuna</span>
+                    tıkla, bildirim iznini ver — abonelik tek seferde tamamlanır ve indirme kilidin açılır.
+                    <br>
+                    <span class="banner-help-link" onclick="openHelpModal()">
+                        <i class="fa-solid fa-circle-question"></i> Bildirim izni nasıl verilir? (iPhone / Android)
+                    </span>
+                </p>
+            </div>
+            <button class="btn-primary" onclick="bildirimlereAboneOl()" id="bannerAboneBtn" style="white-space:nowrap;">
+                <i class="fa-solid fa-bell"></i> Abone Ol
+            </button>
+        </div>
 
         <nav class="tabs">
             <button class="tab-btn active" onclick="switchTab('kayip', event)">
@@ -519,6 +705,96 @@
         </div>
     </div>
 
+    <!-- Bildirim İzni Yardım Modalı -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="help-modal">
+            <span class="close-modal" onclick="closeHelpModal()">&times;</span>
+            <h2>🔔 Bildirim İzni Nasıl Verilir?</h2>
+            <p class="help-sub">Cihazını seç ve adımları takip et. İzni bir kez verdikten sonra "Abone Ol" butonu çalışacaktır.</p>
+
+            <div class="help-tabs">
+                <button class="help-tab active" id="tab-ios" onclick="switchHelp('ios')">
+                    <i class="fa-brands fa-apple"></i> iPhone / iPad
+                </button>
+                <button class="help-tab" id="tab-android" onclick="switchHelp('android')">
+                    <i class="fa-brands fa-android"></i> Android
+                </button>
+            </div>
+
+            <!-- iOS PANEL -->
+            <div class="help-panel active" id="panel-ios">
+                <div class="help-note">
+                    <strong>Önemli:</strong> iPhone'da bildirim almak için site, Safari tarayıcısından
+                    <strong>"Ana Ekrana Eklenmiş" olmak zorunda</strong>. Doğrudan tarayıcıdan bildirim çalışmaz.
+                    Ayrıca iOS 16.4 veya üzeri gereklidir.
+                </div>
+                <div class="help-step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">Bu siteyi <strong>Safari</strong> ile aç (Chrome veya başka tarayıcı değil).</div>
+                </div>
+                <div class="help-step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">Ekranın altındaki <strong>Paylaş</strong> butonuna (kareden yukarı çıkan ok ⬆) dokun.</div>
+                </div>
+                <div class="help-step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">Açılan menüde aşağı kaydır ve <strong>"Ana Ekrana Ekle"</strong> seçeneğine dokun, sonra <strong>"Ekle"</strong> de.</div>
+                </div>
+                <div class="help-step">
+                    <div class="step-num">4</div>
+                    <div class="step-body">Telefonunun <strong>ana ekranına</strong> dön ve yeni eklenen <strong>uygulama ikonundan</strong> siteyi aç.</div>
+                </div>
+                <div class="help-step">
+                    <div class="step-num">5</div>
+                    <div class="step-body">Sağ üstteki <strong>🔔 zil ikonuna</strong> dokun. Çıkan kutuda <strong>"İzin Ver"</strong>i seç.</div>
+                </div>
+                <div class="help-note">
+                    <strong>İzni yanlışlıkla reddettiysen:</strong> Telefonda
+                    <span class="help-key">Ayarlar</span> → <span class="help-key">Bildirimler</span> →
+                    listeden bu uygulamayı bul → <strong>"Bildirimlere İzin Ver"</strong> anahtarını aç.
+                    Sonra uygulamaya dönüp zile tekrar dokun.
+                </div>
+            </div>
+
+            <!-- ANDROID PANEL -->
+            <div class="help-panel" id="panel-android">
+                <div class="help-note">
+                    Android'de <strong>Chrome</strong> tarayıcısı bildirimi doğrudan destekler;
+                    siteyi ana ekrana eklemen şart değildir (ama önerilir).
+                </div>
+                <div class="help-step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">Bu siteyi <strong>Chrome</strong> ile aç.</div>
+                </div>
+                <div class="help-step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">Sağ üstteki <strong>🔔 zil ikonuna</strong> dokun.</div>
+                </div>
+                <div class="help-step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">Ekranda çıkan <strong>"Bildirim göstermek istiyor"</strong> kutusunda <strong>"İzin Ver"</strong>e dokun.</div>
+                </div>
+                <div class="help-step">
+                    <div class="step-num">4</div>
+                    <div class="step-body">Zil ikonu <strong style="color:var(--primary)">maviye</strong> dönerse aboneliğin tamamlanmıştır.</div>
+                </div>
+                <div class="help-note">
+                    <strong>İzni yanlışlıkla reddettiysen / kutu çıkmıyorsa:</strong> Chrome'da adres çubuğunun
+                    solundaki <span class="help-key">🔒 kilit</span> (veya ⚙️) simgesine dokun →
+                    <strong>"İzinler"</strong> → <strong>"Bildirimler"</strong>i <strong>"İzin ver"</strong> yap.
+                    Ardından sayfayı yenileyip zile tekrar dokun.
+                </div>
+                <div class="help-note">
+                    <strong>Hâlâ çalışmıyorsa</strong> telefon ayarlarından da kontrol et:
+                    <span class="help-key">Ayarlar</span> → <span class="help-key">Uygulamalar</span> →
+                    <strong>Chrome</strong> → <strong>Bildirimler</strong>'in açık olduğundan emin ol.
+                </div>
+            </div>
+
+            <button class="ios-confirm-btn" style="margin-top:8px;" onclick="closeHelpModal()">Anladım</button>
+        </div>
+    </div>
+
     <script>
         let currentTab = 'kayip';
         let currentCategory = 'Tümü';
@@ -556,6 +832,19 @@
             icon.classList.remove('fa-regular');
             icon.classList.add('fa-solid');
             btn.title = 'Bildirimlere Abonesiniz';
+
+            // Banner'ı "abone olundu" durumuna çevir
+            const banner = document.getElementById('aboneBanner');
+            if (banner) {
+                banner.classList.add('subscribed-banner');
+                banner.querySelector('.banner-icon i').className = 'fa-solid fa-circle-check';
+                banner.querySelector('.banner-text').innerHTML = `
+                    <strong>Bildirimlere abonesin ✓</strong>
+                    <p>Artık Ders Notları sayfasından dosya indirebilirsin
+                    (her indirme 1 kredi harcar). Yeni kayıp ilanı eklendiğinde de haberin olacak.</p>`;
+                const bBtn = document.getElementById('bannerAboneBtn');
+                if (bBtn) bBtn.style.display = 'none';
+            }
         }
 
         function setZilNormal() {
@@ -662,9 +951,25 @@
         function closeModal() { document.getElementById('addModal').style.display = 'none'; }
         function closeIosModal() { document.getElementById('iosModal').style.display = 'none'; }
 
+        function openHelpModal() {
+            // Cihaza göre uygun sekmeyi varsayılan aç
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            switchHelp(isIOS ? 'ios' : 'android');
+            document.getElementById('helpModal').style.display = 'flex';
+        }
+        function closeHelpModal() { document.getElementById('helpModal').style.display = 'none'; }
+
+        function switchHelp(platform) {
+            ['ios', 'android'].forEach(p => {
+                document.getElementById('tab-' + p).classList.toggle('active', p === platform);
+                document.getElementById('panel-' + p).classList.toggle('active', p === platform);
+            });
+        }
+
         window.onclick = function(event) {
             if (event.target == document.getElementById('addModal')) closeModal();
             if (event.target == document.getElementById('iosModal')) closeIosModal();
+            if (event.target == document.getElementById('helpModal')) closeHelpModal();
         }
 
         document.getElementById('addForm').addEventListener('submit', async function(e) {
