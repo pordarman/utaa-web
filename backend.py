@@ -503,9 +503,11 @@ def kulup_yonetimi_sayfa(current_user):
 # =============================================================================
 @app.route('/verify', methods=['GET', 'POST'])
 def verify_email():
-    if 'temp_user' not in session:
+    temp_user_data = session.get('temp_user')
+    if not temp_user_data:
         return redirect(url_for('register'))
-
+    if  not temp_user_data['email'].endswith('stu.thk.edu.tr'):
+        return 'manitani hamile birakiyim'
     if request.method == 'POST':
         user_code = request.form['code']
         
