@@ -1,0 +1,21 @@
+name: Otomatik Canliya Alma (CI/CD)
+
+on:
+  push:
+    branches:
+      - main # Sadece main dalına kod geldiğinde çalışır
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sunucuya Baglan ve Kodlari Guncelle
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/okulweb
+            git pull origin main
+            sudo systemctl restart flask-okul
