@@ -18,4 +18,4 @@ jobs:
           script: |
             cd /home/ubuntu/okulweb
             git pull origin main
-            sudo systemctl restart flask-okul
+            sudo systemctl restart flask-thk
