@@ -6,26 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ders Notları - THKÜ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --bg: #0d0f14;
-      --bg2: #13161e;
-      --bg3: #1a1e29;
-      --border: rgba(255,255,255,0.07);
-      --border-hover: rgba(99,179,237,0.35);
+      --border: rgba(255, 255, 255, 0.07);
       --text: #e8eaf0;
       --text-muted: #7a8299;
       --text-dim: #4a5270;
       --accent: #4f8ef7;
       --accent2: #38d9a9;
       --accent3: #f5a623;
-      --danger: #ff6b6b;
-      --card-bg: rgba(26,30,41,0.8);
-      --shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Sora', sans-serif;
@@ -35,17 +35,13 @@
       overflow-x: hidden;
     }
 
-    /* Background photo */
     .bg-photo {
       position: fixed;
       inset: 0;
       z-index: 0;
-      background:
-        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1920&q=80')
-        center center / cover no-repeat;
+      background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1920&q=80') center center / cover no-repeat;
     }
 
-    /* Dark overlay + blur */
     .bg-photo::after {
       content: '';
       position: absolute;
@@ -54,14 +50,12 @@
       backdrop-filter: blur(2px);
     }
 
-    /* Subtle color tint on top */
     .bg-photo::before {
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse 70% 60% at 15% 25%, rgba(79,142,247,0.18) 0%, transparent 65%),
-        radial-gradient(ellipse 60% 50% at 85% 75%, rgba(56,217,169,0.12) 0%, transparent 65%);
+      background: radial-gradient(ellipse 70% 60% at 15% 25%, rgba(79, 142, 247, 0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 50% at 85% 75%, rgba(56, 217, 169, 0.12) 0%, transparent 65%);
       z-index: 1;
     }
 
@@ -73,21 +67,19 @@
       z-index: 1;
     }
 
-    /* ── HEADER ── */
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
       padding: 18px 28px;
-      background: rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.07);
       backdrop-filter: blur(30px) saturate(180%);
-      -webkit-backdrop-filter: blur(30px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.13);
+      border: 1px solid rgba(255, 255, 255, 0.13);
       border-radius: 16px;
       margin-bottom: 28px;
       flex-wrap: wrap;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .logo {
@@ -98,7 +90,6 @@
       font-weight: 700;
       color: var(--text);
       letter-spacing: -0.02em;
-      white-space: nowrap;
     }
 
     .logo-icon {
@@ -110,7 +101,6 @@
       align-items: center;
       justify-content: center;
       font-size: 1.1em;
-      flex-shrink: 0;
     }
 
     nav {
@@ -128,16 +118,15 @@
       font-weight: 500;
       color: var(--text-muted);
       transition: all 0.2s;
-      white-space: nowrap;
     }
 
     nav a:hover {
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       color: var(--text);
     }
 
     nav a.active {
-      background: rgba(79,142,247,0.15);
+      background: rgba(79, 142, 247, 0.15);
       color: var(--accent);
     }
 
@@ -145,7 +134,6 @@
       display: flex;
       gap: 10px;
       align-items: center;
-      flex-shrink: 0;
     }
 
     .credit-pill {
@@ -153,8 +141,8 @@
       align-items: center;
       gap: 6px;
       padding: 8px 14px;
-      background: rgba(79,142,247,0.1);
-      border: 1px solid rgba(79,142,247,0.25);
+      background: rgba(79, 142, 247, 0.1);
+      border: 1px solid rgba(79, 142, 247, 0.25);
       border-radius: 50px;
       font-size: 0.82em;
       font-weight: 600;
@@ -174,7 +162,6 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      white-space: nowrap;
     }
 
     .btn-add {
@@ -182,26 +169,30 @@
       color: #0d1a17;
     }
 
-    .btn-add:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-add:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
 
     .btn-home {
-      background: rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.07);
       color: var(--text-muted);
       border: 1px solid var(--border);
     }
 
-    .btn-home:hover { background: rgba(255,255,255,0.11); color: var(--text); }
+    .btn-home:hover {
+      background: rgba(255, 255, 255, 0.11);
+      color: var(--text);
+    }
 
-    /* ── ALERT BOX ── */
     .alert-box {
-      background: rgba(245,166,35,0.08);
+      background: rgba(245, 166, 35, 0.08);
       backdrop-filter: blur(20px) saturate(150%);
-      -webkit-backdrop-filter: blur(20px) saturate(150%);
-      border: 1px solid rgba(245,166,35,0.22);
+      border: 1px solid rgba(245, 166, 35, 0.22);
       border-radius: 14px;
       padding: 20px 24px;
       margin-bottom: 24px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
     .alert-box strong.title {
@@ -220,72 +211,14 @@
       margin-bottom: 6px;
     }
 
-    .alert-box p:last-child { margin-bottom: 0; }
-
-    .alert-box p strong { color: var(--accent3); }
-
-    /* ── İZİN YARDIMI (açılır bölüm) ── */
-    .perm-help {
-      margin-top: 12px;
+    .alert-box p:last-child {
+      margin-bottom: 0;
     }
 
-    .perm-help > summary {
-      cursor: pointer;
-      font-size: 0.82em;
-      color: #6ea8fe;
-      font-weight: 600;
-      list-style: none;
-      user-select: none;
-    }
-    .perm-help > summary::-webkit-details-marker { display: none; }
-    .perm-help > summary::before {
-      content: "▸ ";
-      display: inline-block;
-      transition: transform 0.15s;
-    }
-    .perm-help[open] > summary::before { content: "▾ "; }
-
-    .perm-help .perm-grid {
-      display: flex;
-      gap: 14px;
-      margin-top: 12px;
-      flex-wrap: wrap;
+    .alert-box p strong {
+      color: var(--accent3);
     }
 
-    .perm-help .perm-col {
-      flex: 1;
-      min-width: 220px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 14px 16px;
-    }
-
-    .perm-help .perm-col h4 {
-      font-size: 0.85em;
-      color: #cfe0fb;
-      margin-bottom: 8px;
-    }
-
-    .perm-help .perm-col ol {
-      font-size: 0.78em;
-      color: #9bbef0;
-      line-height: 1.75;
-      padding-left: 18px;
-    }
-    .perm-help .perm-col ol strong { color: #cfe0fb; }
-
-    .perm-help .perm-fix {
-      font-size: 0.76em;
-      color: #8aa7cf;
-      line-height: 1.6;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px dashed rgba(255,255,255,0.1);
-    }
-    .perm-help .perm-fix strong { color: #cfe0fb; }
-
-    /* ── SEARCH ── */
     .search-wrapper {
       margin-bottom: 28px;
       position: relative;
@@ -304,25 +237,25 @@
     #searchInput {
       width: 100%;
       padding: 16px 18px 16px 48px;
-      background: rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.07);
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 12px;
       font-family: 'Sora', sans-serif;
       font-size: 0.95em;
       color: var(--text);
       outline: none;
-      transition: all 0.25s;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.07);
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
 
-    #searchInput::placeholder { color: rgba(255,255,255,0.3); }
+    #searchInput::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
 
     #searchInput:focus {
-      border-color: rgba(79,142,247,0.5);
-      background: rgba(255,255,255,0.1);
-      box-shadow: 0 0 0 3px rgba(79,142,247,0.12), 0 4px 16px rgba(0,0,0,0.2);
+      border-color: rgba(79, 142, 247, 0.5);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.12), 0 4px 16px rgba(0, 0, 0, 0.2);
     }
 
     .search-count {
@@ -335,35 +268,33 @@
       color: var(--text-dim);
     }
 
-    /* ── GRID ── */
     .notes-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
       gap: 16px;
     }
 
-    /* ── NOTE CARD ── */
     .note-card {
-      background: rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.07);
       backdrop-filter: blur(24px) saturate(160%);
-      -webkit-backdrop-filter: blur(24px) saturate(160%);
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 14px;
       padding: 22px;
       display: flex;
       flex-direction: column;
       gap: 14px;
-      transition: all 0.25s;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
       animation: fadeUp 0.35s ease both;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
     }
 
     .note-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 2px;
       background: linear-gradient(90deg, var(--accent), var(--accent2));
       opacity: 0;
@@ -371,13 +302,15 @@
     }
 
     .note-card:hover {
-      border-color: rgba(255,255,255,0.22);
+      border-color: rgba(255, 255, 255, 0.22);
       transform: translateY(-3px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.11);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.11);
     }
 
-    .note-card:hover::before { opacity: 1; }
+    .note-card:hover::before {
+      opacity: 1;
+    }
 
     .card-top {
       display: flex;
@@ -396,9 +329,17 @@
       flex-shrink: 0;
     }
 
-    .file-icon.pdf { background: rgba(255,107,107,0.12); }
-    .file-icon.doc { background: rgba(79,142,247,0.12); }
-    .file-icon.other { background: rgba(56,217,169,0.12); }
+    .file-icon.pdf {
+      background: rgba(255, 107, 107, 0.12);
+    }
+
+    .file-icon.doc {
+      background: rgba(79, 142, 247, 0.12);
+    }
+
+    .file-icon.other {
+      background: rgba(56, 217, 169, 0.12);
+    }
 
     .note-title {
       font-size: 0.97em;
@@ -418,7 +359,6 @@
     .meta-chip {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
       padding: 3px 9px;
       border-radius: 50px;
       font-size: 0.72em;
@@ -427,25 +367,25 @@
     }
 
     .chip-type {
-      background: rgba(255,107,107,0.1);
+      background: rgba(255, 107, 107, 0.1);
       color: #ff9999;
-      border: 1px solid rgba(255,107,107,0.15);
-    }
-
-    .chip-type.pdf-chip {
-      background: rgba(255,107,107,0.1);
-      color: #ff9999;
-      border-color: rgba(255,107,107,0.15);
+      border: 1px solid rgba(255, 107, 107, 0.15);
     }
 
     .chip-type.doc-chip {
-      background: rgba(79,142,247,0.1);
+      background: rgba(79, 142, 247, 0.1);
       color: #80b5ff;
-      border-color: rgba(79,142,247,0.15);
+      border-color: rgba(79, 142, 247, 0.15);
+    }
+
+    .chip-type.ppt-chip {
+      background: rgba(56, 217, 169, 0.1);
+      color: #38d9a9;
+      border-color: rgba(56, 217, 169, 0.15);
     }
 
     .chip-date {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text-muted);
       border: 1px solid var(--border);
     }
@@ -457,8 +397,8 @@
       gap: 8px;
       width: 100%;
       padding: 11px;
-      background: rgba(79,142,247,0.1);
-      border: 1px solid rgba(79,142,247,0.2);
+      background: rgba(79, 142, 247, 0.1);
+      border: 1px solid rgba(79, 142, 247, 0.2);
       border-radius: 9px;
       color: var(--accent);
       font-family: 'Sora', sans-serif;
@@ -470,9 +410,8 @@
     }
 
     .download-btn:hover:not(:disabled) {
-      background: rgba(79,142,247,0.18);
-      border-color: rgba(79,142,247,0.4);
-      transform: translateY(-1px);
+      background: rgba(79, 142, 247, 0.18);
+      border-color: rgba(79, 142, 247, 0.4);
     }
 
     .download-btn:disabled {
@@ -480,16 +419,28 @@
       cursor: not-allowed;
     }
 
-    /* ── STATES ── */
     .empty-state {
       grid-column: 1/-1;
       text-align: center;
       padding: 80px 20px;
     }
 
-    .empty-state-icon { font-size: 3em; margin-bottom: 16px; }
-    .empty-state-title { font-size: 1.05em; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
-    .empty-state-sub { font-size: 0.85em; color: var(--text-dim); }
+    .empty-state-icon {
+      font-size: 3em;
+      margin-bottom: 16px;
+    }
+
+    .empty-state-title {
+      font-size: 1.05em;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .empty-state-sub {
+      font-size: 0.85em;
+      color: var(--text-dim);
+    }
 
     .loading-state {
       grid-column: 1/-1;
@@ -511,40 +462,47 @@
       animation: spin 0.8s linear infinite;
     }
 
-    /* ── ANIMATIONS ── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
-    /* Stagger cards */
-    .note-card:nth-child(1)  { animation-delay: 0.03s; }
-    .note-card:nth-child(2)  { animation-delay: 0.06s; }
-    .note-card:nth-child(3)  { animation-delay: 0.09s; }
-    .note-card:nth-child(4)  { animation-delay: 0.12s; }
-    .note-card:nth-child(5)  { animation-delay: 0.15s; }
-    .note-card:nth-child(6)  { animation-delay: 0.18s; }
-    .note-card:nth-child(7)  { animation-delay: 0.21s; }
-    .note-card:nth-child(8)  { animation-delay: 0.24s; }
-    .note-card:nth-child(9)  { animation-delay: 0.27s; }
-    .note-card:nth-child(10) { animation-delay: 0.30s; }
-    .note-card:nth-child(11) { animation-delay: 0.33s; }
-    .note-card:nth-child(12) { animation-delay: 0.36s; }
-
-    /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
-      .header { padding: 14px 18px; }
-      nav { display: none; }
-      .notes-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .header {
+        padding: 14px 18px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .notes-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
     }
 
     @media (max-width: 480px) {
-      .notes-grid { grid-template-columns: 1fr; }
-      .header-actions .btn-home { display: none; }
+      .notes-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-actions .btn-home {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -553,7 +511,6 @@
   <div class="bg-photo"></div>
   <div class="container">
 
-    <!-- HEADER -->
     <header class="header">
       <div class="logo">
         <div class="logo-icon">📚</div>
@@ -573,72 +530,86 @@
         <div class="credit-pill">
           💎 <span id="userCredit">···</span> Kredi
         </div>
-        <a href="/not-ekle" class="btn btn-add">+ Not Ekle <span style="opacity:0.7;font-weight:400">(1 Kredi)</span></a>
+        <a href="/not-ekle" class="btn btn-add">+ Not Ekle <span style="opacity:0.7;font-weight:400">(2 Kredi)</span></a>
         <a href="/" class="btn btn-home">← Ana Sayfa</a>
       </div>
     </header>
 
-    <!-- ALERT -->
     <div class="alert-box">
       <strong class="title">⚡ Ödül Sistemi</strong>
       <p>100 puana ulaştığınızda <strong>1000 TL ödül</strong> kazanacaksınız!</p>
       <p><strong>Dikkat:</strong> Legal olmayan şekilde paylaşılan ders notları silinecektir.</p>
-      <p><strong>Dikkat:</strong> Var olan notları tekrar yükleyip kredi kazanan kişiler tespit edilip kayıtları silinecektir.</p>
-      <p><strong>Dikkat:</strong> Teams Gruplarındaki Slaytları atmayın. Öğretim Görevlilerinin kendi paylaştıkları sınavlar ve quizler harici içerikler silinecektir.</p>
+      <p><strong>Dikkat:</strong> Var olan notları tekrar yükleyip kredi kazanan kişiler tespit edilip kayıtları
+        silinecektir.</p>
+      <p><strong>Dikkat:</strong> Teams Gruplarındaki Slaytları atmayın. Öğretim Görevlilerinin kendi paylaştıkları
+        sınavlar ve quizler harici içerikler silinecektir.</p>
+      <p style="margin-top: 12px; color: #8aa7cf; border-top: 1px solid rgba(245, 166, 35, 0.22); padding-top: 10px;">
+        Not: Her indirme <strong style="color: #cfe0fb;">1 kredi</strong> harcar; kredini not yükleyerek kazanabilirsin.
+      </p>
     </div>
 
-      <div class="sub-text">
-        <p style="margin-top:6px;">Not: Her indirme <strong style="color:#cfe0fb">1 kredi</strong> harcar; kredini not yükleyerek kazanabilirsin.</p>
-      </div>
-
-    <!-- SEARCH -->
     <div class="search-wrapper">
       <span class="search-icon">🔍</span>
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="Ders adına göre filtrele... (örn: Fizik, Calculus)"
-        autocomplete="off"
-        spellcheck="false"
-      />
+      <input type="text" id="searchInput" placeholder="Ders adına göre filtrele... (örn: Fizik, Calculus)"
+        autocomplete="off" spellcheck="false" />
       <span class="search-count" id="searchCount"></span>
     </div>
 
-    <!-- NOTES GRID -->
     <div id="notesContainer" class="notes-grid">
       <div class="loading-state">
         <div class="spinner"></div>
         Notlar yükleniyor...
       </div>
     </div>
-
   </div>
 
   <script>
+    const container = document.getElementById('notesContainer');
+    const searchCount = document.getElementById('searchCount');
+    const searchInput = document.getElementById('searchInput');
+    const userCredit = document.getElementById('userCredit');
+
     let allNotes = [];
 
-    // Dosya tipine göre ikon ve chip sınıfı
-    function getFileIcon(type) {
-      if (!type) return { emoji: '📄', cls: 'other', chipCls: '' };
-      const t = type.toLowerCase();
-      if (t === 'pdf') return { emoji: '📕', cls: 'pdf', chipCls: 'pdf-chip' };
-      if (['doc','docx'].includes(t)) return { emoji: '📘', cls: 'doc', chipCls: 'doc-chip' };
-      if (['ppt','pptx'].includes(t)) return { emoji: '📙', cls: 'other', chipCls: '' };
-      return { emoji: '📄', cls: 'other', chipCls: '' };
-    }
 
-    function formatDate(dateStr) {
-      return new Date(dateStr).toLocaleDateString('tr-TR', { day:'2-digit', month:'short', year:'numeric' });
-    }
+    // XSS Koruması
+    const escapeHTML = str => {
+      if (!str) return '';
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' };
+      return str.replace(/[&<>'"]/g, tag => map[tag] || tag);
+    };
 
-    // Render
+    // Tarih Formatlayıcı ("2024-06-15T12:34:56Z" → "15 Haz 2024")
+    const formatDate = dateStr => {
+      return new Date(dateStr).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+
+    // Arama Inputu için Debounce Fonksiyonu
+    const debounce = (func, delay) => {
+      let timeoutId;
+      return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+      };
+    };
+
+    // Dosya İkonları Map
+    const FILE_ICONS = {
+      pdf: { emoji: '📕', cls: 'pdf', chipCls: 'pdf-chip' },
+      doc: { emoji: '📘', cls: 'doc', chipCls: 'doc-chip' },
+      docx: { emoji: '📘', cls: 'doc', chipCls: 'doc-chip' },
+      ppt: { emoji: '📙', cls: 'other', chipCls: 'ppt-chip' },
+      pptx: { emoji: '📙', cls: 'other', chipCls: 'ppt-chip' },
+      other: { emoji: '📄', cls: 'other', chipCls: '' }
+    };
+
+    const getFileIcon = type => FILE_ICONS[type?.toLowerCase()] || FILE_ICONS['other'];
+
+
     function renderNotes(notes) {
-      const container = document.getElementById('notesContainer');
-      const countEl = document.getElementById('searchCount');
-
       if (!notes || notes.length === 0) {
-        const query = document.getElementById('searchInput').value.trim();
-        countEl.textContent = '';
+        const query = escapeHTML(searchInput.value.trim());
+        searchCount.textContent = '';
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">${query ? '🔎' : '📭'}</div>
@@ -648,69 +619,73 @@
         return;
       }
 
-      countEl.textContent = `${notes.length} sonuç`;
+      searchCount.textContent = `${notes.length} sonuç`;
 
       container.innerHTML = notes.map(note => {
         const { emoji, cls, chipCls } = getFileIcon(note.dosya_tipi);
-        const typeLabel = note.dosya_tipi ? note.dosya_tipi.toUpperCase() : 'DOSYA';
+        const typeLabel = escapeHTML((note.dosya_tipi || 'DOSYA').toUpperCase());
+        const safeName = escapeHTML(note.ders_adi);
+        const safeFile = escapeHTML(note.dosya_adi);
+
         return `
           <div class="note-card">
             <div class="card-top">
               <div class="file-icon ${cls}">${emoji}</div>
-              <div class="note-title">${note.ders_adi}</div>
+              <div class="note-title">${safeName}</div>
             </div>
             <div class="note-meta">
               <span class="meta-chip chip-type ${chipCls}">${typeLabel}</span>
               <span class="meta-chip chip-date">📅 ${formatDate(note.tarih)}</span>
             </div>
-            <button onclick="handleDownload('${note.dosya_adi}', '${note.ders_adi}')" class="download-btn">
+            <button onclick="handleDownload(this, '${safeFile}')" class="download-btn">
               ⬇️ İndir &nbsp;·&nbsp; 1 Kredi
             </button>
           </div>`;
       }).join('');
     }
 
-    // Search filter
-    function filterNotes() {
-      const q = document.getElementById('searchInput').value.trim().toLowerCase();
-      if (!q) { renderNotes(allNotes); return; }
-      const filtered = allNotes.filter(n => n.ders_adi.toLowerCase().includes(q));
+    const filterNotes = () => {
+      const query = searchInput.value.trim().toLowerCase();
+      if (!query) {
+        renderNotes(allNotes);
+        return;
+      }
+      const filtered = allNotes.filter(note => note.ders_adi.toLowerCase().includes(query));
       renderNotes(filtered);
-    }
+    };
 
-    // Debounce
-    let debounceTimer;
-    document.getElementById('searchInput').addEventListener('input', () => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(filterNotes, 200);
-    });
+    // 300 ms gecikmeli olarak arama yapacak şekilde arama inputuna debounce ekliyoruz
+    searchInput.addEventListener('input', debounce(filterNotes, 300));
 
-    // Load user credit
     async function loadUserInfo() {
       try {
         const res = await fetch('/api/user-info');
-        if (res.ok) {
-          const d = await res.json();
-          document.getElementById('userCredit').textContent = d.kredi;
-        }
-      } catch { document.getElementById('userCredit').textContent = '?'; }
+        if (!res.ok) throw new Error('Kredi alınamadı');
+
+        const data = await res.json();
+        userCredit.textContent = data.kredi;
+      } catch {
+        userCredit.textContent = '?';
+      }
     }
 
-    // Load notes
     async function loadNotes() {
       try {
         const res = await fetch('/api/ders-notlari');
         if (!res.ok) {
+
+          // Eğer kullanıcı giriş yapmamışsa login sayfasına yönlendir
           if (res.status === 401) {
             window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
             return;
           }
           throw new Error('HTTP ' + res.status);
         }
+
         allNotes = await res.json();
         renderNotes(allNotes);
       } catch {
-        document.getElementById('notesContainer').innerHTML = `
+        container.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">⚠️</div>
             <div class="empty-state-title">Notlar yüklenirken hata oluştu</div>
@@ -719,39 +694,41 @@
       }
     }
 
-    // Download
-    async function handleDownload(filename, dersAdi) {
-      const btns = document.querySelectorAll('.download-btn');
-      const btn = Array.from(btns).find(b => typeof b.onclick === 'function' && b.onclick.toString().includes(filename));
-      if (!btn) return;
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '⏳ İşleniyor...';
-      btn.disabled = true;
+    async function handleDownload(btnElement, filename) {
+      const originalText = btnElement.innerHTML;
+      btnElement.innerHTML = '⏳ İşleniyor...';
+      btnElement.disabled = true;
 
       try {
         const response = await fetch(`/uploads/notes/${filename}`);
-        if (response.status === 403) {
-          const data = await response.json();
-          alert("⚠️ Yetersiz Kredi!\n\nBakiyenizde yeterli kredi yok (Gerekli: 1 Kredi). Lütfen not yükleyerek kredi kazanın.");
 
+        // Yetersiz kredi durumunu kontrol et
+        if (response.status === 403) {
+          alert("⚠️ Yetersiz Kredi!\n\nBakiyenizde yeterli kredi yok (Gerekli: 1 Kredi). Lütfen not yükleyerek kredi kazanın.");
           return;
         }
         if (!response.ok) throw new Error('İndirme hatası');
 
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = filename;
-        document.body.appendChild(a);
-        a.click();
+        const anchor = document.createElement('a');
+
+        anchor.href = url;
+        anchor.download = filename;
+        document.body.appendChild(anchor);
+        anchor.click();
+
         window.URL.revokeObjectURL(url);
-        a.remove();
+        anchor.remove();
+
+        // Krediyi güncelle
         loadUserInfo();
-      } catch {
+      } catch (error) {
+        console.error("İndirme Hatası:", error);
         alert("İndirme sırasında bir hata oluştu.");
       } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+        btnElement.innerHTML = originalText;
+        btnElement.disabled = false;
       }
     }
 
@@ -761,4 +738,5 @@
     });
   </script>
 </body>
+
 </html>
