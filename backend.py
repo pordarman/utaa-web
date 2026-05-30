@@ -16,6 +16,7 @@ from werkzeug.utils import secure_filename
 import openpyxl
 import jwt
 import json
+import re
 
 # Config
 from config import (
@@ -500,8 +501,11 @@ def verify_email():
     temp_user_data = session.get('temp_user')
     if not temp_user_data:
         return redirect(url_for('register'))
-    if  not temp_user_data['email'].endswith('stu.thk.edu.tr'):
-        return 'manitani hamile birakiyim'
+    
+    # /s\d{9,10}@stu\.thk\.edu\.tr/ regex'ine uymayan email adreslerini engelle
+    if not re.match(r'^s\d{9,10}@stu\.thk\.edu\.tr$', temp_user_data.get('email', '')):
+        return "Geçersiz email formatı! Lütfen THKÜ öğrenci emailinizi kullanın.", 400
+    
     if request.method == 'POST':
         user_code = request.form['code']
         
@@ -1187,7 +1191,7 @@ def api_not_ekle(current_user):
             yuklenme_tarihi=datetime.now(timezone.utc),
             user_id=current_user.id
         )
-        current_user.kredi += 1
+        current_user.kredi += 2  # Not yükleyene 2 kredi ver
         db.session.add(yeni_not)
         db.session.commit()
         

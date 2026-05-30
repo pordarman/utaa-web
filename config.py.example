@@ -58,3 +58,19 @@ KULUP_UPLOAD_FOLDER = 'uploads/kulup'
 DEBUG = True  # Production'da False yapın!
 HOST = '0.0.0.0'
 PORT = 5000
+
+# =============================================================================
+# E-posta Ayarları (Kullanıcı doğrulama, şifre sıfırlama vs.)
+# =============================================================================
+MAIL_SERVER = 'smtp.gmail.com'
+MAIL_PORT = 587
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'test@gmail.com'
+MAIL_PASSWORD = 'password'
+MAIL_DEFAULT_SENDER = 'test@gmail.com'
+
+# =============================================================================
+# Push Bildirim Ayarları (Web push için VAPID anahtarları)
+# VAPID anahtarları oluşturmak için: https://web-push-codelab.glitch.me/
+# =============================================================================
+VAPID_PRIVATE_KEY = "test_vapid_private_key"
