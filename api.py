@@ -1187,7 +1187,8 @@ def get_subscriptions(current_user):
     subscriptions = WebPushSubscription.query.all()
     return jsonify([{
         'id': sub.id,
-        'name': sub.name,
-        'email': sub.email,
-        'created_at': sub.created_at
+        'subscription_info': json.loads(sub.subscription_info),
+        'kullanici_ajani': sub.kullanici_ajani,
+        'olusturulma_tarihi': sub.olusturulma_tarihi,
+        'user_id': sub.user_id
     } for sub in subscriptions])
