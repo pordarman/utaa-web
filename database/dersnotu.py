@@ -1,7 +1,6 @@
 from database.initdb import db
-from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
+
 class DersNotu(db.Model):
     __tablename__ = 'ders_notlari'
     id = db.Column(db.Integer, primary_key=True)
@@ -11,3 +10,14 @@ class DersNotu(db.Model):
     dosya_tipi = db.Column(db.String(10))   # "pdf" veya "docx"
     yuklenme_tarihi = db.Column(db.DateTime, default=datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    
+class DersNotuBekleyen(db.Model):
+    __tablename__ = 'ders_notlari_bekleyen'
+    id = db.Column(db.Integer, primary_key=True)
+    ders_adi = db.Column(db.String(200))
+    dosya_adi = db.Column(db.String(255))
+    dosya_yolu = db.Column(db.String(500))
+    dosya_tipi = db.Column(db.String(10))
+    yuklenme_tarihi = db.Column(db.DateTime, default=datetime.now)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    durum = db.Column(db.String(50), default='PENDING') # PENDING, REJECTED

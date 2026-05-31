@@ -22,9 +22,10 @@ from database import saatler, dersnotu, degerlendirme, pazar
 from database.kulupicerik import Kulupicerik
 from database.kulupyonetim import KulupYonetim
 from database.kulupler import Kulupler
+from database.dersnotu import DersNotuBekleyen, DersNotu
 
 from config import VAPID_PRIVATE_KEY
-from utils import allowed_file, allowed_image, kayip_upload_path, enstantane_upload_path, scrape_duyurular, scrape_haberler, bildirim_gonder
+from utils import allowed_file, allowed_image, bildirim_gonder_kullaniciya, kayip_upload_path, enstantane_upload_path, scrape_duyurular, scrape_haberler, bildirim_gonder
 from auth import token_required, is_club_admin, is_admin
 from durak import durak_sorgula
 
@@ -671,12 +672,11 @@ def api_otobus_saatleri():
 @token_required(next_location='/ders-notlari')
 def api_not_ekle(current_user):
     if 'file' not in request.files:
-            return jsonify({'message': 'No file part'}), 400
+        return jsonify({'message': 'Dosya bulunamadı'}), 400
         
     file = request.files['file']
-    
     if file.filename == '':
-        return jsonify({'message': 'No selected file'}), 400
+        return jsonify({'message': 'Dosya seçilmedi'}), 400
     
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
@@ -684,21 +684,55 @@ def api_not_ekle(current_user):
         filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_filename)
         file.save(filepath)
         
-        yeni_not = dersnotu.DersNotu(
-            ders_adi=request.form['ders_adi'],
+        yeni_not = DersNotuBekleyen(
+            ders_adi=request.form.get('ders_adi', 'Bilinmeyen Ders'),
             dosya_adi=unique_filename,
             dosya_yolu=filepath,
             dosya_tipi=filename.rsplit('.', 1)[1].lower(),
             yuklenme_tarihi=datetime.now(timezone.utc),
-            user_id=current_user.id
+            user_id=current_user.id,
+            durum='PENDING'
         )
-        current_user.kredi += 2  # Not yükleyene 2 kredi ver
         db.session.add(yeni_not)
         db.session.commit()
-        
-        return jsonify({'message': 'Not başarıyla yüklendi!'}), 201
+        return jsonify({'message': 'Notunuz başarıyla yüklendi ve yönetici onayına gönderildi!'}), 201
     
-    return jsonify({'message': 'Invalid file type'}), 400
+    return jsonify({'message': 'Geçersiz dosya formatı'}), 400
+
+@api_bp.get('/api/kullanici-notlari')
+@token_required()
+def api_kullanici_notlari(current_user):
+    onaylanmislar = DersNotu.query.filter_by(user_id=current_user.id).all()
+    digerleri = DersNotuBekleyen.query.filter_by(user_id=current_user.id).all()
+    
+    sonuc = []
+    for not_item in onaylanmislar:
+        sonuc.append({"id": not_item.id, "ders_adi": not_item.ders_adi, "tarih": not_item.yuklenme_tarihi.isoformat(), "durum": "APPROVED"})
+        
+    for not_item in digerleri:
+        sonuc.append({"id": not_item.id, "ders_adi": not_item.ders_adi, "tarih": not_item.yuklenme_tarihi.isoformat(), "durum": not_item.durum})
+        
+    sonuc.sort(key=lambda x: x['tarih'], reverse=True)
+    return jsonify(sonuc)
+
+@api_bp.delete('/api/not-geri-cek/<int:id>')
+@token_required()
+def api_not_geri_cek(current_user, id):
+    bekleyen_not = DersNotuBekleyen.query.filter_by(id=id, user_id=current_user.id).first()
+    if not bekleyen_not:
+        return jsonify({'message': 'Bu not bulunamadı veya silme yetkiniz yok.'}), 404
+        
+    if bekleyen_not.durum == 'PENDING':
+        try:
+            if os.path.exists(bekleyen_not.dosya_yolu):
+                os.remove(bekleyen_not.dosya_yolu)
+        except: pass
+
+        db.session.delete(bekleyen_not)
+        db.session.commit()
+        return jsonify({'message': 'Not başarıyla geri çekildi.'}), 200
+    
+    return jsonify({'message': 'Sadece beklemede olan notlar geri çekilebilir.'}), 400
 
 @api_bp.post('/api/degerlendirme-ekle')
 @token_required(next_location='/')
@@ -1038,6 +1072,7 @@ def delete_user(current_user, id):
         return jsonify({'message': 'Kullanıcı başarıyla silindi!'}), 200
     except Exception as e:
         db.session.rollback()
+        
         # Eğer kullanıcının sistemde bağlı verileri (notlar, mesajlar vb.) varsa silme işlemi hata verir.
         return jsonify({'message': 'Kullanıcı silinemedi! Bu öğrencinin sistemde aktif verileri (ders notu, forum mesajı vb.) olabilir.'}), 400
     
@@ -1048,11 +1083,9 @@ def update_user_credit(current_user, id):
     data = request.json
     yeni_kredi = data.get('kredi')
 
-    # Boş veri kontrolü
     if yeni_kredi is None:
         return jsonify({'message': 'Yeni kredi miktarı belirtilmedi!'}), 400
 
-    # Sayısal değer ve negatif kontrolü
     try:
         yeni_kredi = int(yeni_kredi)
         if yeni_kredi < 0:
@@ -1060,7 +1093,6 @@ def update_user_credit(current_user, id):
     except ValueError:
         return jsonify({'message': 'Geçerli bir sayı giriniz!'}), 400
 
-    # Kullanıcıyı bul ve güncelle
     user = User.query.get_or_404(id)
     user.kredi = yeni_kredi
     
@@ -1070,3 +1102,92 @@ def update_user_credit(current_user, id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': f'Sunucu hatası: {str(e)}'}), 500
+    
+@api_bp.get('/api/admin/pending-notes')
+@token_required()
+@is_admin
+def get_pending_notes(current_user):
+    notes = db.session.query(DersNotuBekleyen, User.name, User.email)\
+        .join(User, DersNotuBekleyen.user_id == User.id)\
+        .filter(DersNotuBekleyen.durum == 'PENDING').all()
+    
+    return jsonify([{
+        'id': n[0].id,
+        'ders_adi': n[0].ders_adi,
+        'dosya_url': f"/uploads/notes/{n[0].dosya_adi}",
+        'tarih': n[0].yuklenme_tarihi.strftime("%d.%m.%Y %H:%M"),
+        'kullanici_ad': n[1],
+        'kullanici_email': n[2]
+    } for n in notes])
+
+@api_bp.post('/api/admin/approve-note/<int:id>')
+@token_required()
+@is_admin
+def approve_note(current_user, id):
+    bekleyen = DersNotuBekleyen.query.get_or_404(id)
+    if bekleyen.durum != 'PENDING':
+        return jsonify({'message': 'Bu not zaten islenmis.'}), 400
+        
+    onayli_not = DersNotu(
+        ders_adi=bekleyen.ders_adi,
+        dosya_adi=bekleyen.dosya_adi,
+        dosya_yolu=bekleyen.dosya_yolu,
+        dosya_tipi=bekleyen.dosya_tipi,
+        yuklenme_tarihi=bekleyen.yuklenme_tarihi,
+        user_id=bekleyen.user_id
+    )
+    
+    note_owner = User.query.get(bekleyen.user_id)
+    if note_owner:
+        note_owner.kredi += 2
+        
+        bildirim_gonder_kullaniciya(note_owner.id, "✅ Ders Notunuz Onaylandı!", f"Yüklediğiniz '{bekleyen.ders_adi}' notu onaylandı ve 2 kredi kazandınız.", "/ders-notlari")
+
+    db.session.add(onayli_not)
+    db.session.delete(bekleyen)
+    db.session.commit()
+    
+    return jsonify({'message': 'Not başarıyla onaylandı ve kredi verildi!'}), 200
+
+@api_bp.post('/api/admin/reject-note/<int:id>')
+@token_required()
+@is_admin
+def reject_note(current_user, id):
+    bekleyen = DersNotuBekleyen.query.get_or_404(id)
+    
+    bekleyen.durum = 'REJECTED'
+    
+    note_owner = User.query.get(bekleyen.user_id)
+    if note_owner:
+        bildirim_gonder_kullaniciya(note_owner.id, "❌ Notunuz Reddedildi", f"Yüklediğiniz '{bekleyen.ders_adi}' notu standartlara uymadığı için reddedildi.", "/not-ekle")
+
+    db.session.commit()
+    return jsonify({'message': 'Not reddedildi.'}), 200
+
+@api_bp.get('/api/admin/notlar')
+@token_required()
+@is_admin
+def get_all_notes(current_user):
+    notes = db.session.query(DersNotu, User.name, User.email)\
+        .join(User, DersNotu.user_id == User.id).all()
+        
+    return jsonify([{
+        'id': n[0].id,
+        'ders_adi': n[0].ders_adi,
+        'dosya_url': f"/uploads/notes/{n[0].dosya_adi}",
+        'tarih': n[0].yuklenme_tarihi.strftime("%d.%m.%Y %H:%M"),
+        'kullanici_ad': n[1],
+        'kullanici_email': n[2]
+    } for n in notes])
+    
+@api_bp.get('/api/admin/subscriptions')
+@token_required()
+@is_admin
+def get_subscriptions(current_user):
+    subscriptions = WebPushSubscription.query.all()
+    return jsonify([{
+        'id': sub.id,
+        'name': sub.name,
+        'email': sub.email,
+        'created_at': sub.created_at
+    } for sub in subscriptions])
