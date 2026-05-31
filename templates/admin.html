@@ -782,10 +782,10 @@
 
                 subsTableBody.innerHTML = data.map(s => `
                     <tr>
-                        <td>#${s.id}</td>
-                        <td style="font-weight: 500;">${escapeHTML(s.name)}</td>
-                        <td style="color: var(--text-muted); font-size: 0.8rem;">${escapeHTML(s.email)}</td>
-                        <td>${s.created_at}</td>
+                        <td>#${s.user_id}</td>
+                        <td style="font-weight: 500;">${escapeHTML(s.kullanici_ad)}</td>
+                        <td style="color: var(--text-muted); font-size: 0.8rem;">${escapeHTML(s.kullanici_email)}</td>
+                        <td>${s.olusturulma_tarihi}</td>
                     </tr>
                 `).join('');
             } catch (e) { console.error(e); }
