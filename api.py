@@ -1184,11 +1184,12 @@ def get_all_notes(current_user):
 @token_required()
 @is_admin
 def get_subscriptions(current_user):
-    subscriptions = WebPushSubscription.query.all()
+    subscriptions = db.session.query(WebPushSubscription, User.name, User.email)\
+        .join(User, WebPushSubscription.user_id == User.id).all()
     return jsonify([{
-        'id': sub.id,
-        'subscription_info': json.loads(sub.subscription_info),
-        'kullanici_ajani': sub.kullanici_ajani,
-        'olusturulma_tarihi': sub.olusturulma_tarihi,
-        'user_id': sub.user_id
+        'id': sub[0].id,
+        'olusturulma_tarihi': sub[0].olusturulma_tarihi,
+        'user_id': sub[0].user_id,
+        'kullanici_ad': sub[1],
+        'kullanici_email': sub[2]
     } for sub in subscriptions])
