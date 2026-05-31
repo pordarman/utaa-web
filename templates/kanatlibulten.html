@@ -930,9 +930,9 @@
     <script>
         let allPosts = [];
         let currentFilter = 'all';
-        const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+        let selectedHeroPostId = null;
+        const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000;
 
-        // DOM elements
         const loadingDiv = document.getElementById('loading');
         const emptyState = document.getElementById('emptyState');
         const searchInput = document.getElementById('searchInput');
@@ -947,7 +947,6 @@
         const filterButtons = document.querySelectorAll('.filter-btn');
         const heroSection = document.getElementById('heroSection');
 
-        // Roman numerals for post numbering
         function toRoman(num) {
             const romanNumerals = [
                 ['M', 1000], ['CM', 900], ['D', 500], ['CD', 400],
@@ -964,14 +963,13 @@
             return result;
         }
 
-        // Check if post is new (within last month)
-        function isNewPost(dateString) {
+        // Postun yeni olup olmadığını kontrol et
+        function isPostNew(dateString) {
             const postDate = new Date(dateString);
             const now = new Date();
             return (now - postDate) < ONE_MONTH_MS;
         }
 
-        // Load posts from API
         async function loadPosts() {
             loadingDiv.style.display = 'flex';
             emptyState.style.display = 'none';
@@ -993,7 +991,6 @@
             }
         }
 
-        // Create post card HTML
         function createPostCard(post, index, isNew) {
             const postDate = new Date(post.yuklenme_tarihi);
             const formattedDate = postDate.toLocaleDateString('tr-TR', {
@@ -1029,7 +1026,6 @@
             `;
         }
 
-        // Create hero card for the latest post
         function createHeroCard(post) {
             const postDate = new Date(post.yuklenme_tarihi);
             const formattedDate = postDate.toLocaleDateString('tr-TR', {
@@ -1051,35 +1047,28 @@
             `;
         }
 
-        // Render posts based on filter
         function renderPosts() {
             const searchTerm = searchInput.value.toLowerCase();
 
-            // Filter posts
             let filteredPosts = allPosts.filter(post => {
                 const matchesSearch = !searchTerm ||
                     (post.aciklama || '').toLowerCase().includes(searchTerm);
                 return matchesSearch;
             });
 
-            // Sort by date desc to find latest
             filteredPosts.sort((a, b) => new Date(b.yuklenme_tarihi) - new Date(a.yuklenme_tarihi));
 
-            // If user selected a hero, use it; otherwise latest
             let heroPost = null;
             if (selectedHeroPostId) {
                 heroPost = filteredPosts.find(p => p.id === selectedHeroPostId);
-                // Clear selection if not present after filtering
                 if (!heroPost) selectedHeroPostId = null;
             }
             if (!heroPost) heroPost = filteredPosts[0];
             const restPosts = filteredPosts.filter(p => !heroPost || p.id !== heroPost.id);
 
-            // Separate into new and archive
-            const newPosts = restPosts.filter(post => isNewPost(post.yuklenme_tarihi));
-            const archivePosts = restPosts.filter(post => !isNewPost(post.yuklenme_tarihi));
+            const newPosts = restPosts.filter(post => isPostNew(post.yuklenme_tarihi));
+            const archivePosts = restPosts.filter(post => !isPostNew(post.yuklenme_tarihi));
 
-            // Apply filter
             let displayNewPosts = [];
             let displayArchivePosts = [];
 
@@ -1092,7 +1081,6 @@
                 displayArchivePosts = archivePosts;
             }
 
-            // Check if we have any posts to display
             const hasAnyPosts = !!heroPost || displayNewPosts.length > 0 || displayArchivePosts.length > 0;
 
             if (!hasAnyPosts) {
@@ -1106,7 +1094,6 @@
 
             emptyState.style.display = 'none';
 
-            // Render hero
             if (heroPost) {
                 heroSection.style.display = 'block';
                 heroSection.innerHTML = createHeroCard(heroPost);
@@ -1114,7 +1101,6 @@
                 heroSection.style.display = 'none';
             }
 
-            // Render new posts
             if (displayNewPosts.length > 0) {
                 newPostsSection.style.display = 'block';
                 newPostsGrid.innerHTML = displayNewPosts
@@ -1124,7 +1110,6 @@
                 newPostsSection.style.display = 'none';
             }
 
-            // Render archive posts as carousel
             if (displayArchivePosts.length > 0) {
                 archivePostsSection.style.display = 'block';
                 archiveCarouselTrack.innerHTML = displayArchivePosts
@@ -1132,7 +1117,6 @@
                     .join('');
                 archiveCarouselNav.style.display = 'flex';
 
-                // Reset carousel position
                 currentArchiveIndex = 0;
                 updateArchiveCarousel();
             } else {
@@ -1140,21 +1124,20 @@
                 archiveCarouselNav.style.display = 'none';
             }
 
-            // Show divider if both sections are visible
             if (displayNewPosts.length > 0 && displayArchivePosts.length > 0) {
                 archiveDivider.style.display = 'block';
             } else {
                 archiveDivider.style.display = 'none';
             }
         }
-        // Promote clicked post to hero
-        let selectedHeroPostId = null;
+
         function handleCardClick(event) {
             const card = event.target.closest('.post-card');
             if (!card) return;
+            
             const idStr = card.dataset.postId;
             if (!idStr) return;
-            // Find the post and open lightbox
+
             const post = allPosts.find(p => p.id === Number(idStr));
             if (post) {
                 openLightbox(post.dosya_url, post.aciklama || 'Kanatlı Bülten');
@@ -1174,9 +1157,8 @@
             document.getElementById('lightbox').classList.remove('show');
             document.body.style.overflow = '';
         }
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+        document.addEventListener('keydown', (e) => { if (e.keyCode === 27) closeLightbox(); });
 
-        // Simple carousel logic for archive posts
         let currentArchiveIndex = 0;
         function updateArchiveCarousel() {
             const cards = archiveCarouselTrack.children;
@@ -1199,7 +1181,6 @@
         });
         window.addEventListener('resize', updateArchiveCarousel);
 
-        // Filter button handlers
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
                 filterButtons.forEach(btn => btn.classList.remove('active'));
@@ -1209,10 +1190,8 @@
             });
         });
 
-        // Search input handler
         searchInput.addEventListener('input', renderPosts);
 
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', loadPosts);
     </script>
 </body>

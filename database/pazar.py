@@ -13,5 +13,5 @@ class PazarIlani(db.Model):
     fiyat = db.Column(db.Integer, nullable=False)
     fotograf_adi = db.Column(db.String(255), nullable=False)
     iletisim_no = db.Column(db.String(20), nullable=False)
-    tarih = db.Column(db.DateTime, default=datetime.utcnow)
+    tarih = db.Column(db.DateTime, default=datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

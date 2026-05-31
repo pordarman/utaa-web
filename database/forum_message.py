@@ -8,6 +8,6 @@ class ForumMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     konu = db.Column(db.String(200))
     mesaj_icerigi = db.Column(db.String(2000))
-    gonderilme_tarihi = db.Column(db.DateTime, default=datetime.utcnow)
+    gonderilme_tarihi = db.Column(db.DateTime, default=datetime.now)
     begeni_sayisi = db.Column(db.Integer, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

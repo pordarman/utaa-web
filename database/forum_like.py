@@ -9,7 +9,7 @@ class ForumLike(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     message_id = db.Column(db.Integer, db.ForeignKey('forum_messages.id'), nullable=False)
     like_type = db.Column(db.String(10), nullable=False)  # 'like' veya 'dislike'
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
     
     # Bir kullanıcı bir mesaja sadece bir kez beğeni/beğenmeme yapabilir
     __table_args__ = (
