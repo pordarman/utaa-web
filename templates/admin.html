@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,55 +18,256 @@
             --border: #e2e8f0;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-        body { background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
 
-        .sidebar { width: 260px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px; }
-        .sidebar-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 30px; color: var(--text); }
-        .nav-btn { display: block; width: 100%; text-align: left; padding: 12px 16px; margin-bottom: 8px; background: transparent; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 500; color: var(--text-muted); transition: 0.2s; }
-        .nav-btn:hover { background: #f7fafc; color: var(--text); }
-        .nav-btn.active { background: #ebf4ff; color: var(--primary); font-weight: 600; }
+        .sidebar {
+            width: 260px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 24px;
+        }
 
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .header h1 { font-size: 1.8rem; font-weight: 700; }
-        
-        .panel-section { display: none; background: var(--surface); border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid var(--border); }
-        .panel-section.active { display: block; }
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--text);
+        }
 
-        .search-box { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; outline: none; transition: 0.2s; }
-        .search-box:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.1); }
+        .nav-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: 0.2s;
+        }
 
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid var(--border); }
-        th { font-weight: 600; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        td { font-size: 0.95rem; }
-        
-        .btn { padding: 8px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: 0.2s; }
-        .btn-success { background: rgba(56, 161, 105, 0.1); color: var(--success); }
-        .btn-success:hover { background: var(--success); color: white; }
-        .btn-danger { background: rgba(229, 62, 62, 0.1); color: var(--danger); }
-        .btn-danger:hover { background: var(--danger); color: white; }
-        .btn-primary { background: var(--primary); color: white; padding: 10px 20px; font-size: 0.95rem; }
-        .btn-primary:hover { background: #3b76d6; }
+        .nav-btn:hover {
+            background: #f7fafc;
+            color: var(--text);
+        }
 
-        .flex-actions { display: flex; gap: 8px; }
-        .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
+        .nav-btn.active {
+            background: #ebf4ff;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .panel-section {
+            display: none;
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border);
+        }
+
+        .panel-section.active {
+            display: block;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-success {
+            background: rgba(56, 161, 105, 0.1);
+            color: var(--success);
+        }
+
+        .btn-success:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: rgba(229, 62, 62, 0.1);
+            color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary:hover {
+            background: #3b76d6;
+        }
+
+        .flex-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
 
         /* Modal Tasarımı */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-overlay.active { display: flex; }
-        .modal-content { background: var(--surface); padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .modal-header h2 { font-size: 1.4rem; color: var(--text); }
-        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: var(--text); }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; }
-        .form-group input:focus { outline: none; border-color: var(--primary); }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.4rem;
+            color: var(--text);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
     </style>
 </head>
+
 <body>
 
     <aside class="sidebar">
@@ -96,7 +298,9 @@
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
-                        <tr><td colspan="5" class="empty-state">Yükleniyor...</td></tr>
+                        <tr>
+                            <td colspan="5" class="empty-state">Yükleniyor...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -118,7 +322,9 @@
                         </tr>
                     </thead>
                     <tbody id="requestsTableBody">
-                        <tr><td colspan="4" class="empty-state">Yükleniyor...</td></tr>
+                        <tr>
+                            <td colspan="4" class="empty-state">Yükleniyor...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -144,10 +350,31 @@
                     <label>Geçici Şifre</label>
                     <input type="text" id="newUserPassword" required placeholder="Öğrencinin ilk şifresi">
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;" id="submitUserBtn">Kaydet</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;"
+                    id="submitUserBtn">Kaydet</button>
             </form>
         </div>
     </div>
+
+    <div class="modal-overlay" id="editCreditModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Kredi Düzenle</h2>
+                    <button class="close-btn" onclick="closeEditCreditModal()">&times;</button>
+                </div>
+                <form id="editCreditForm" onsubmit="submitEditCreditForm(event)">
+                    <p id="editCreditUserName" style="margin-bottom: 15px; color: var(--text-muted); font-weight: 500;">
+                    </p>
+                    <input type="hidden" id="editCreditUserId">
+                    <div class="form-group">
+                        <label>Yeni Kredi Miktarı</label>
+                        <input type="number" id="newCreditAmount" required min="0" placeholder="Örn: 5">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;"
+                        id="submitCreditBtn">Krediyi Güncelle</button>
+                </form>
+            </div>
+        </div>
 
     <script>
         const usersPanel = document.getElementById('users-panel');
@@ -157,6 +384,7 @@
         const userSearch = document.getElementById('userSearch');
         const navBtns = document.querySelectorAll('.nav-btn');
         const addUserModal = document.getElementById('addUserModal');
+        const editCreditModal = document.getElementById('editCreditModal');
 
         const escapeHTML = str => {
             if (!str) return '';
@@ -197,7 +425,10 @@
                         <td style="color: var(--text-muted);">${escapeHTML(u.email)}</td>
                         <td><span style="background: #ebf4ff; color: #4f8ef7; padding: 4px 8px; border-radius: 4px; font-weight: 600;">💎 ${u.kredi}</span></td>
                         <td>
-                            <button class="btn btn-danger" onclick="deleteUser(${u.id})">Sil</button>
+                            <div class="flex-actions">
+                                <button class="btn btn-primary" style="padding: 6px 10px; font-size: 0.8rem;" onclick="openEditCreditModal(${u.id}, ${u.kredi}, '${escapeHTML(u.name)}')">✏️ Kredi</button>
+                                <button class="btn btn-danger" style="padding: 6px 10px; font-size: 0.8rem;" onclick="deleteUser(${u.id})">Sil</button>
+                            </div>
                         </td>
                     </tr>
                 `).join('');
@@ -251,9 +482,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                
+
                 const data = await res.json();
-                
+
                 if (res.ok) {
                     alert('Kullanıcı başarıyla eklendi!');
                     closeAddUserModal();
@@ -267,6 +498,54 @@
             } finally {
                 btn.disabled = false;
                 btn.innerText = 'Kaydet';
+            }
+        };
+
+        // Kredi düzenleme fonksiyonları (açma, kapama, submit)
+        const openEditCreditModal = (id, currentCredit, userName) => {
+            document.getElementById('editCreditUserId').value = id;
+            document.getElementById('newCreditAmount').value = currentCredit;
+            document.getElementById('editCreditUserName').innerText = `Öğrenci: ${userName}`;
+            editCreditModal.classList.add('active');
+        };
+
+        const closeEditCreditModal = () => {
+            editCreditModal.classList.remove('active');
+            document.getElementById('editCreditForm').reset();
+        };
+
+        const submitEditCreditForm = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitCreditBtn');
+            btn.disabled = true;
+            btn.innerText = 'Güncelleniyor...';
+
+            const id = document.getElementById('editCreditUserId').value;
+            const newCredit = document.getElementById('newCreditAmount').value;
+
+            try {
+                const res = await fetch(`/api/admin/users/${id}/kredi`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ kredi: parseInt(newCredit) })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    alert('✓ ' + data.message);
+                    closeEditCreditModal();
+                    // Listeyi arka planda sessizce yenile
+                    loadUsers(document.getElementById('userSearch').value); 
+                } else {
+                    alert('HATA: ' + data.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Sunucu ile iletişim kurulamadı.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Krediyi Güncelle';
             }
         };
 
@@ -298,7 +577,7 @@
         };
 
         const verifySingle = async (id) => {
-            if(!confirm('Bu öğretmeni onaylamak istediğinize emin misiniz?')) return;
+            if (!confirm('Bu öğretmeni onaylamak istediğinize emin misiniz?')) return;
             try {
                 const res = await fetch(`/api/admin/verify-instructor/${id}`, { method: 'POST' });
                 if (res.ok) loadPendingRequests();
@@ -307,7 +586,7 @@
         };
 
         const rejectSingle = async (id) => {
-            if(!confirm('Bu isteği silmek istediğinize emin misiniz?')) return;
+            if (!confirm('Bu isteği silmek istediğinize emin misiniz?')) return;
             try {
                 const res = await fetch(`/api/admin/reject-instructor/${id}`, { method: 'DELETE' });
                 if (res.ok) loadPendingRequests();
@@ -316,7 +595,7 @@
         };
 
         const verifyAll = async () => {
-            if(!confirm('Bekleyen tüm öğretmenleri onaylamak istediğinize emin misiniz?')) return;
+            if (!confirm('Bekleyen tüm öğretmenleri onaylamak istediğinize emin misiniz?')) return;
             try {
                 const res = await fetch('/api/verify-all', { method: 'POST' });
                 if (res.ok) {
@@ -327,7 +606,8 @@
         };
 
         // Modal dışına tıklayınca kapatma
-        window.onclick = function(event) {
+        window.onclick = function (event) {
+            if (event.target == editCreditModal) closeEditCreditModal();
             if (event.target == addUserModal) closeAddUserModal();
         }
 
@@ -342,4 +622,5 @@
         document.addEventListener('DOMContentLoaded', () => loadUsers());
     </script>
 </body>
+
 </html>
