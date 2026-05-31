@@ -1040,3 +1040,33 @@ def delete_user(current_user, id):
         db.session.rollback()
         # Eğer kullanıcının sistemde bağlı verileri (notlar, mesajlar vb.) varsa silme işlemi hata verir.
         return jsonify({'message': 'Kullanıcı silinemedi! Bu öğrencinin sistemde aktif verileri (ders notu, forum mesajı vb.) olabilir.'}), 400
+    
+@api_bp.put('/api/admin/users/<int:id>/kredi')
+@token_required()
+@is_admin
+def update_user_credit(current_user, id):
+    data = request.json
+    yeni_kredi = data.get('kredi')
+
+    # Boş veri kontrolü
+    if yeni_kredi is None:
+        return jsonify({'message': 'Yeni kredi miktarı belirtilmedi!'}), 400
+
+    # Sayısal değer ve negatif kontrolü
+    try:
+        yeni_kredi = int(yeni_kredi)
+        if yeni_kredi < 0:
+            return jsonify({'message': 'Kredi 0\'dan küçük olamaz!'}), 400
+    except ValueError:
+        return jsonify({'message': 'Geçerli bir sayı giriniz!'}), 400
+
+    # Kullanıcıyı bul ve güncelle
+    user = User.query.get_or_404(id)
+    user.kredi = yeni_kredi
+    
+    try:
+        db.session.commit()
+        return jsonify({'message': f'Kredi başarıyla {yeni_kredi} olarak güncellendi!'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'Sunucu hatası: {str(e)}'}), 500
