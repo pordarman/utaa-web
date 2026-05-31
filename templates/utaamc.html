@@ -401,86 +401,101 @@
   </footer>
 
   <script>
-    // Micro-interactions: smooth hover pulse for cards
-    document.querySelectorAll('.card').forEach(c => {
-      c.addEventListener('mouseenter', () => c.style.boxShadow = '0 10px 24px rgba(0,0,0,0.45)');
-      c.addEventListener('mouseleave', () => c.style.boxShadow = '');
-    });
+    const CLUB_NAME = "UTAA Music Club";
 
-    // UTAA: single page (hero + archive). Frontend stores club name.
-    const CLUB_NAME = 'UTAA Music Club';
+    // DOM Cache
+    const heroSection = document.getElementById('heroSection');
+    const heroEmpty = document.getElementById('heroEmpty');
+    const archiveGrid = document.getElementById('archiveGrid');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
 
-    function renderHero(item) {
-      const heroCard = document.getElementById('heroCard');
-      const heroImg = document.getElementById('heroImg');
-      const heroDate = document.getElementById('heroDate');
-      const heroTitle = document.getElementById('heroTitle');
-      const heroDesc = document.getElementById('heroDesc');
-      const d = new Date(item.yuklenme_tarihi);
-      const dateStr = d.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
-      heroImg.src = item.dosya_url;
-      heroDate.textContent = dateStr;
-      heroTitle.textContent = item.aciklama || 'Gönderi';
-      heroDesc.textContent = '';
-      heroCard.style.display = 'grid';
-    }
+    // Güvenlik: XSS Filtresi
+    const escapeHTML = str => {
+      if (!str) return '';
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' };
+      return String(str).replace(/[&<>'"]/g, tag => map[tag] || tag);
+    };
 
-    function renderArchive(items) {
-      const grid = document.getElementById('archiveGrid');
-      grid.innerHTML = items.map(item => {
-        const d = new Date(item.yuklenme_tarihi);
-        const dateStr = d.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
+    const openLightbox = (src, caption) => {
+      lightboxImg.src = src;
+      lightboxCaption.textContent = caption || '';
+      lightbox.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => {
+      lightbox.classList.remove('show');
+      document.body.style.overflow = '';
+      lightboxImg.src = '';
+    };
+
+    const renderHero = (item) => {
+      const safeImg = escapeHTML(item.resim);
+      const safeTitle = escapeHTML(item.baslik);
+      const safeDate = escapeHTML(item.tarih);
+      const safeContent = escapeHTML(item.icerik);
+
+      heroSection.innerHTML = `
+      <div class="hero-bg" style="background-image: url('${safeImg}');"></div>
+      <div class="hero-content">
+        <div class="hero-meta">${safeDate}</div>
+        <h1 class="hero-title">${safeTitle}</h1>
+        <div class="hero-desc">${safeContent}</div>
+      </div>
+    `;
+      heroSection.style.display = 'flex';
+    };
+
+    const renderArchive = (items) => {
+      if (!items?.length) return;
+
+      archiveGrid.innerHTML = items.map(item => {
+        const safeImg = escapeHTML(item.resim);
+        const safeTitle = escapeHTML(item.baslik);
+        const safeDate = escapeHTML(item.tarih);
+
         return `
-          <article class="card" data-id="${item.id}" data-src="${item.dosya_url}" data-caption="${item.aciklama || 'Gönderi'}">
-            <div class="thumb" style="overflow:hidden; border-style:solid; height:200px;">
-              <img src="${item.dosya_url}" alt="Gönderi" style="width:100%; height:100%; object-fit:cover; display:block;" />
-            </div>
-            <span class="date">${dateStr}</span>
-            <h3>${item.aciklama || 'Gönderi'}</h3>
-          </article>
-        `;
+        <div class="news-card" data-src="${safeImg}" data-caption="${safeTitle}">
+          <img src="${safeImg}" alt="${safeTitle}" class="news-img" loading="lazy">
+          <div class="news-info">
+            <div class="news-date">${safeDate}</div>
+            <div class="news-title">${safeTitle}</div>
+          </div>
+        </div>
+      `;
       }).join('');
-      grid.querySelectorAll('.card').forEach(card => {
+
+      // Lightbox olay dinleyicilerini güvenli şekilde ekleme
+      archiveGrid.querySelectorAll('.news-card').forEach(card => {
         card.addEventListener('click', () => {
-          const src = card.getAttribute('data-src');
-          const caption = card.getAttribute('data-caption');
-          openLightbox(src, caption);
+          openLightbox(card.getAttribute('data-src'), card.getAttribute('data-caption'));
         });
       });
-    }
+    };
 
-    async function loadUTAA() {
-      const heroEmpty = document.getElementById('heroEmpty');
+    const loadUTAA = async () => {
       heroEmpty.style.display = 'none';
       try {
         const res = await fetch(`/api/utaa/news?kulup_adi=${encodeURIComponent(CLUB_NAME)}`);
-        if (!res.ok) throw new Error('Fetch failed');
+        if (!res.ok) throw new Error('Ağ yanıtı başarısız');
+
         const items = await res.json();
-        if (!items || items.length === 0) {
+        if (!items?.length) {
           heroEmpty.style.display = 'block';
           return;
         }
+
         renderHero(items[0]);
         renderArchive(items.slice(1));
       } catch (e) {
+        console.error("Veri çekme hatası:", e);
         heroEmpty.style.display = 'block';
       }
-    }
+    };
 
     document.addEventListener('DOMContentLoaded', loadUTAA);
-
-    // Lightbox functions
-    function openLightbox(src, caption) {
-      document.getElementById('lightboxImg').src = src;
-      document.getElementById('lightboxCaption').textContent = caption || '';
-      document.getElementById('lightbox').classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('show');
-      document.body.style.overflow = '';
-    }
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
   </script>
 </body>
 

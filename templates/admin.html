@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetim Paneli - THKÜ Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f7f6;
+            --surface: #ffffff;
+            --text: #2d3748;
+            --text-muted: #718096;
+            --primary: #4f8ef7;
+            --success: #38a169;
+            --danger: #e53e3e;
+            --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+        .sidebar { width: 260px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px; }
+        .sidebar-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 30px; color: var(--text); }
+        .nav-btn { display: block; width: 100%; text-align: left; padding: 12px 16px; margin-bottom: 8px; background: transparent; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 500; color: var(--text-muted); transition: 0.2s; }
+        .nav-btn:hover { background: #f7fafc; color: var(--text); }
+        .nav-btn.active { background: #ebf4ff; color: var(--primary); font-weight: 600; }
+
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 1.8rem; font-weight: 700; }
+        
+        .panel-section { display: none; background: var(--surface); border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid var(--border); }
+        .panel-section.active { display: block; }
+
+        .search-box { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; outline: none; transition: 0.2s; }
+        .search-box:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.1); }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+        th { font-weight: 600; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        td { font-size: 0.95rem; }
+        
+        .btn { padding: 8px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: 0.2s; }
+        .btn-success { background: rgba(56, 161, 105, 0.1); color: var(--success); }
+        .btn-success:hover { background: var(--success); color: white; }
+        .btn-danger { background: rgba(229, 62, 62, 0.1); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-primary { background: var(--primary); color: white; padding: 10px 20px; font-size: 0.95rem; }
+        .btn-primary:hover { background: #3b76d6; }
+
+        .flex-actions { display: flex; gap: 8px; }
+        .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
+
+        /* Modal Tasarımı */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--surface); padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h2 { font-size: 1.4rem; color: var(--text); }
+        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: var(--text); }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; }
+        .form-group input:focus { outline: none; border-color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-title">⚙️ THKÜ Admin</div>
+        <button class="nav-btn active" onclick="switchTab('users')">👥 Kullanıcı Yönetimi</button>
+        <button class="nav-btn" onclick="switchTab('requests')">📝 Bekleyen İstekler</button>
+        <div style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px;">
+            <a href="/" style="text-decoration: none; color: var(--text-muted); font-size: 0.9rem;">← Siteye Dön</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <section id="users-panel" class="panel-section active">
+            <div class="header">
+                <h1>Kullanıcılar</h1>
+                <button class="btn btn-primary" onclick="openAddUserModal()">+ Kullanıcı Ekle</button>
+            </div>
+            <input type="text" id="userSearch" class="search-box" placeholder="İsim veya email ara...">
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>İsim Soyisim</th>
+                            <th>Email</th>
+                            <th>Kredi</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="5" class="empty-state">Yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="requests-panel" class="panel-section">
+            <div class="header">
+                <h1>Öğretmen Onay İstekleri</h1>
+                <button class="btn btn-primary" onclick="verifyAll()">Tümünü Onayla</button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Öğretmen Adı</th>
+                            <th>Ofis Gün/Saat</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody">
+                        <tr><td colspan="4" class="empty-state">Yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Öğrenci Kaydı</h2>
+                <button class="close-btn" onclick="closeAddUserModal()">&times;</button>
+            </div>
+            <form id="addUserForm" onsubmit="submitAddUserForm(event)">
+                <div class="form-group">
+                    <label>Ad Soyad</label>
+                    <input type="text" id="newUserName" required placeholder="Örn: Ali Yılmaz">
+                </div>
+                <div class="form-group">
+                    <label>Email Adresi</label>
+                    <input type="email" id="newUserEmail" required placeholder="sxxxxxxxxx@stu.thk.edu.tr">
+                </div>
+                <div class="form-group">
+                    <label>Geçici Şifre</label>
+                    <input type="text" id="newUserPassword" required placeholder="Öğrencinin ilk şifresi">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;" id="submitUserBtn">Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const usersPanel = document.getElementById('users-panel');
+        const requestsPanel = document.getElementById('requests-panel');
+        const usersTableBody = document.getElementById('usersTableBody');
+        const requestsTableBody = document.getElementById('requestsTableBody');
+        const userSearch = document.getElementById('userSearch');
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const addUserModal = document.getElementById('addUserModal');
+
+        const escapeHTML = str => {
+            if (!str) return '';
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' };
+            return String(str).replace(/[&<>'"]/g, tag => map[tag] || tag);
+        };
+
+        const switchTab = (tabName) => {
+            navBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            usersPanel.classList.remove('active');
+            requestsPanel.classList.remove('active');
+
+            if (tabName === 'users') {
+                usersPanel.classList.add('active');
+                loadUsers();
+            } else {
+                requestsPanel.classList.add('active');
+                loadPendingRequests();
+            }
+        };
+
+        /* --- KULLANICI YÖNETİMİ --- */
+        const loadUsers = async (query = '') => {
+            try {
+                const res = await fetch(`/api/admin/users?q=${encodeURIComponent(query)}`);
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    usersTableBody.innerHTML = '<tr><td colspan="5" class="empty-state">Kullanıcı bulunamadı.</td></tr>';
+                    return;
+                }
+
+                usersTableBody.innerHTML = data.map(u => `
+                    <tr>
+                        <td>#${u.id}</td>
+                        <td style="font-weight: 500;">${escapeHTML(u.name)}</td>
+                        <td style="color: var(--text-muted);">${escapeHTML(u.email)}</td>
+                        <td><span style="background: #ebf4ff; color: #4f8ef7; padding: 4px 8px; border-radius: 4px; font-weight: 600;">💎 ${u.kredi}</span></td>
+                        <td>
+                            <button class="btn btn-danger" onclick="deleteUser(${u.id})">Sil</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                console.error(e);
+                usersTableBody.innerHTML = '<tr><td colspan="5" class="empty-state" style="color:red;">Hata oluştu.</td></tr>';
+            }
+        };
+
+        const deleteUser = async (id) => {
+            const isConfirmed = confirm("Bu kullanıcıyı kalıcı olarak silmek istediğinize emin misiniz?\n\nDİKKAT: Kullanıcının sisteme yüklediği veriler varsa silme işlemi başarısız olabilir.");
+            if (!isConfirmed) return;
+
+            try {
+                const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(data.message);
+                    loadUsers(userSearch.value);
+                } else {
+                    alert('HATA: ' + data.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Silme işlemi sırasında sunucuya ulaşılamadı.');
+            }
+        };
+
+        const openAddUserModal = () => addUserModal.classList.add('active');
+        const closeAddUserModal = () => {
+            addUserModal.classList.remove('active');
+            document.getElementById('addUserForm').reset();
+        };
+
+        const submitAddUserForm = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitUserBtn');
+            btn.disabled = true;
+            btn.innerText = 'Ekleniyor...';
+
+            const payload = {
+                name: document.getElementById('newUserName').value.trim(),
+                email: document.getElementById('newUserEmail').value.trim(),
+                password: document.getElementById('newUserPassword').value
+            };
+
+            try {
+                const res = await fetch('/api/admin/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    alert('Kullanıcı başarıyla eklendi!');
+                    closeAddUserModal();
+                    loadUsers();
+                } else {
+                    alert('HATA: ' + data.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Kullanıcı eklenirken bir hata oluştu.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Kaydet';
+            }
+        };
+
+        const loadPendingRequests = async () => {
+            try {
+                const res = await fetch('/api/admin/pending-instructors');
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    requestsTableBody.innerHTML = '<tr><td colspan="4" class="empty-state">Bekleyen onay isteği yok. 🎉</td></tr>';
+                    return;
+                }
+                console.log(data);
+
+                requestsTableBody.innerHTML = data.map(p => `
+                    <tr>
+                        <td>#${p.id}</td>
+                        <td style="font-weight: 500;">${escapeHTML(p.name)}</td>
+                        <td>${escapeHTML(p.days.map(d => `${d.gun}: ${d.saatler.join(', ')}`).join(' | '))}</td>
+                        <td class="flex-actions">
+                            <button class="btn btn-success" onclick="verifySingle(${p.id})">Onayla</button>
+                            <button class="btn btn-danger" onclick="rejectSingle(${p.id})">Reddet</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        const verifySingle = async (id) => {
+            if(!confirm('Bu öğretmeni onaylamak istediğinize emin misiniz?')) return;
+            try {
+                const res = await fetch(`/api/admin/verify-instructor/${id}`, { method: 'POST' });
+                if (res.ok) loadPendingRequests();
+                else alert('Bir hata oluştu!');
+            } catch (e) { console.error(e); }
+        };
+
+        const rejectSingle = async (id) => {
+            if(!confirm('Bu isteği silmek istediğinize emin misiniz?')) return;
+            try {
+                const res = await fetch(`/api/admin/reject-instructor/${id}`, { method: 'DELETE' });
+                if (res.ok) loadPendingRequests();
+                else alert('Bir hata oluştu!');
+            } catch (e) { console.error(e); }
+        };
+
+        const verifyAll = async () => {
+            if(!confirm('Bekleyen tüm öğretmenleri onaylamak istediğinize emin misiniz?')) return;
+            try {
+                const res = await fetch('/api/verify-all', { method: 'POST' });
+                if (res.ok) {
+                    alert('Tümü başarıyla onaylandı!');
+                    loadPendingRequests();
+                } else alert('Bir hata oluştu!');
+            } catch (e) { console.error(e); }
+        };
+
+        // Modal dışına tıklayınca kapatma
+        window.onclick = function(event) {
+            if (event.target == addUserModal) closeAddUserModal();
+        }
+
+        // Arama (Debounce ile)
+        let timeout;
+        userSearch.addEventListener('input', (e) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => loadUsers(e.target.value), 300);
+        });
+
+        // Sayfa yüklendiğinde kullanıcıları çek
+        document.addEventListener('DOMContentLoaded', () => loadUsers());
+    </script>
+</body>
+</html>

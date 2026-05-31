@@ -571,7 +571,6 @@
 
     let allNotes = [];
 
-
     // XSS Koruması
     const escapeHTML = str => {
       if (!str) return '';
@@ -593,7 +592,6 @@
       };
     };
 
-    // Dosya İkonları Map
     const FILE_ICONS = {
       pdf: { emoji: '📕', cls: 'pdf', chipCls: 'pdf-chip' },
       doc: { emoji: '📘', cls: 'doc', chipCls: 'doc-chip' },

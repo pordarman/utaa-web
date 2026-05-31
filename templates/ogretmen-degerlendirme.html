@@ -308,90 +308,92 @@
     </div>
 
     <script>
-        // Yıldız derecelendirme
-        function setupStars(containerId, inputId) {
-            const container = document.getElementById(containerId);
-            const stars = container.querySelectorAll('.star');
-            const input = document.getElementById(inputId);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Yıldız derecelendirme
+            function setupStars(containerId, inputId) {
+                const container = document.getElementById(containerId);
+                const stars = container.querySelectorAll('.star');
+                const input = document.getElementById(inputId);
 
-            stars.forEach((star, index) => {
-                star.addEventListener('click', () => {
-                    const value = star.getAttribute('data-value');
-                    input.value = value;
+                stars.forEach((star, index) => {
+                    star.addEventListener('click', () => {
+                        const value = star.getAttribute('data-value');
+                        input.value = value;
 
-                    stars.forEach((s, i) => {
-                        if (i < value) {
-                            s.classList.add('active');
-                        } else {
-                            s.classList.remove('active');
-                        }
+                        stars.forEach((s, i) => {
+                            if (i < value) {
+                                s.classList.add('active');
+                            } else {
+                                s.classList.remove('active');
+                            }
+                        });
                     });
                 });
-            });
-        }
-
-        setupStars('ders-stars', 'ders_anlatma');
-        setupStars('sinav-stars', 'sinav_zorlugu');
-
-        // Form gönderimi
-        document.getElementById('degerlendirme-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(e.target);
-            const data = {};
-
-            for (let [key, value] of formData.entries()) {
-                if (key.includes('_')) {
-                    data[key] = value;
-                }
             }
 
-            // Checkboxları ekle
-            data.slayttan_isler = document.getElementById('slayttan_isler').checked;
-            data.yoklama_alir = document.getElementById('yoklama_alir').checked;
-            data.kitap_onemli = document.getElementById('kitap_onemli').checked;
-            data.kanaat_notu = document.getElementById('kanaat_notu').checked;
-            data.projeye_onem = document.getElementById('projeye_onem').checked;
+            setupStars('ders-stars', 'ders_anlatma');
+            setupStars('sinav-stars', 'sinav_zorlugu');
 
-            // Text inputları ekle
-            data.ad = document.getElementById('ad').value;
-            data.soyad = document.getElementById('soyad').value;
+            // Form gönderimi
+            document.getElementById('degerlendirme-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            try {
-                const response = await fetch('/api/degerlendirme-ekle', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
+                const formData = new FormData(e.target);
+                const data = {};
 
-                const result = await response.json();
-
-                if (response.ok) {
-                    showAlert('Değerlendirmeniz başarıyla gönderildi!', 'success');
-                    setTimeout(() => {
-                        window.location.href = '/ogretmen-listesi';
-                    }, 1500);
-                } else {
-                    showAlert(result.message || 'Bir hata oluştu', 'error');
+                for (let [key, value] of formData.entries()) {
+                    if (key.includes('_')) {
+                        data[key] = value;
+                    }
                 }
-            } catch (error) {
-                showAlert('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+
+                // Checkboxları ekle
+                data.slayttan_isler = document.getElementById('slayttan_isler').checked;
+                data.yoklama_alir = document.getElementById('yoklama_alir').checked;
+                data.kitap_onemli = document.getElementById('kitap_onemli').checked;
+                data.kanaat_notu = document.getElementById('kanaat_notu').checked;
+                data.projeye_onem = document.getElementById('projeye_onem').checked;
+
+                // Text inputları ekle
+                data.ad = document.getElementById('ad').value;
+                data.soyad = document.getElementById('soyad').value;
+
+                try {
+                    const response = await fetch('/api/degerlendirme-ekle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        showAlert('Değerlendirmeniz başarıyla gönderildi!', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/ogretmen-listesi';
+                        }, 1500);
+                    } else {
+                        showAlert(result.message || 'Bir hata oluştu', 'error');
+                    }
+                } catch (error) {
+                    showAlert('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+                }
+            });
+
+            function showAlert(message, type) {
+                const container = document.getElementById('alert-container');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                container.appendChild(alert);
+
+                setTimeout(() => {
+                    alert.remove();
+                }, 3000);
             }
         });
-
-        function showAlert(message, type) {
-            const container = document.getElementById('alert-container');
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            container.appendChild(alert);
-
-            setTimeout(() => {
-                alert.remove();
-            }, 3000);
-        }
     </script>
 </body>
 

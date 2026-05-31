@@ -22,6 +22,12 @@ SECRET_KEY = "guvenli-rastgele-secret-key-buraya"
 # JWT token süresi (saat)
 JWT_EXPIRATION_HOURS = 1
 
+# Admin paneline erişim için izin verilen e-posta adresleri
+ADMIN_EMAILS = [
+    "s123456789@stu.thk.edu.tr", # Genel admin
+    # Diğer admin e-postalarını buraya ekleyebilirsiniz
+]
+
 # =============================================================================
 # Dosya Yükleme Ayarları
 # =============================================================================

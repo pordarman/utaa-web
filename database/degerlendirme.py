@@ -20,7 +20,7 @@ class OgretmenDegerlendirme(db.Model):
     # Alınan harf notu
     alinan_harf_notu = db.Column(db.String(2), nullable=True)  # AA, BA, BB, CB, CC, DC, DD, FD, FF
     
-    degerlendirme_tarihi = db.Column(db.DateTime, default=datetime.utcnow)
+    degerlendirme_tarihi = db.Column(db.DateTime, default=datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
     def __repr__(self):

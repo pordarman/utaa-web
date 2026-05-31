@@ -228,22 +228,21 @@
   </div>
 
   <script>
-    function openModal(imageSrc) {
+    // DOM ögelerini baştan çekmek yerine fonksiyon içinde çağırıyoruz çünkü çok basit
+    const openModal = (imageSrc) => {
       const modal = document.getElementById('imageModal');
       const modalImg = document.getElementById('modalImage');
-      modal.style.display = 'block';
+
       modalImg.src = imageSrc;
-    }
+      modal.style.display = 'block';
+    };
 
-    function closeModal() {
+    const closeModal = () => {
       document.getElementById('imageModal').style.display = 'none';
-    }
+    };
 
-    // ESC tuşu ile kapatma
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') {
-        closeModal();
-      }
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeModal();
     });
   </script>
 </body>

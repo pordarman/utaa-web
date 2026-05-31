@@ -160,60 +160,77 @@
     </div>
 
     <script>
+        // DOM Cache
+        const grid = document.getElementById('pazarGrid');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
         let allItems = [];
 
-        async function loadItems() {
-            try {
-                const res = await fetch('/api/ilanlar');
-                allItems = await res.json();
-                renderItems(allItems);
-            } catch (err) {
-                console.error(err);
-                document.getElementById('pazarGrid').innerHTML = 'Yükleme hatası.';
-            }
-        }
+        // Güvenlik: XSS Filtresi
+        const escapeHTML = str => {
+            if (!str) return '';
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' };
+            return String(str).replace(/[&<>'"]/g, tag => map[tag] || tag);
+        };
 
-        function renderItems(items) {
-            const grid = document.getElementById('pazarGrid');
-            if (items.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">Henüz ilan yok. İlk ilanı sen ekle!</div>';
+        const renderItems = (items) => {
+            if (!items?.length) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6c757d;">Bu kategoride henüz ilan bulunmuyor.</div>';
                 return;
             }
 
-            grid.innerHTML = items.map(item => `
-                <div class="card">
-                    <img src="${item.resim_url}" class="card-img" alt="${item.baslik}" onerror="this.src='https://via.placeholder.com/300?text=Resim+Yok'">
-                    <div class="card-body">
-                        <div class="price">${item.fiyat} ₺</div>
-                        <div class="title" title="${item.baslik}">${item.baslik}</div>
-                        <div class="meta">
-                            <span>${item.kategori}</span>
-                            <span>${item.tarih}</span>
-                        </div>
-                        <a href="https://wa.me/90${item.iletisim.replace(/\D/g, '').slice(-10)}" target="_blank" class="contact-btn">
-                            📞 Satıcıyla İletişime Geç
-                        </a>
-                    </div>
-                </div>
-            `).join('');
-        }
+            grid.innerHTML = items.map(item => {
+                // Veri sanitizasyonu
+                const safeImg = escapeHTML(item.resim) || 'https://via.placeholder.com/300?text=Resim+Yok';
+                const safeTitle = escapeHTML(item.baslik);
+                const safePrice = escapeHTML(item.fiyat);
+                const safeCategory = escapeHTML(item.kategori);
+                const safeDate = escapeHTML(item.tarih);
 
-        function filterItems(category) {
-            // Buton aktifliğini değiştir
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.includes(category) || (category === 'Tümü' && btn.textContent === 'Tümü')) {
-                    btn.classList.add('active');
-                }
+                // Telefon numarasından sadece son 10 rakamı güvenli şekilde al
+                const safePhone = escapeHTML((item.iletisim || '').replace(/\D/g, '').slice(-10));
+
+                return `
+        <div class="card">
+          <img src="${safeImg}" alt="${safeTitle}" class="card-img" loading="lazy" onerror="this.src='https://via.placeholder.com/300?text=Resim+Yok'">
+          <div class="card-body">
+            <div class="price">${safePrice} ₺</div>
+            <div class="title" title="${safeTitle}">${safeTitle}</div>
+            <div class="meta">
+              <span>${safeCategory}</span>
+              <span>${safeDate}</span>
+            </div>
+            <a href="https://wa.me/90${safePhone}" target="_blank" class="contact-btn" rel="noopener noreferrer">
+              📞 Satıcıyla İletişime Geç
+            </a>
+          </div>
+        </div>
+      `;
+            }).join('');
+        };
+
+        const filterItems = (category) => {
+            filterBtns.forEach(btn => {
+                const btnText = btn.textContent.trim();
+                btn.classList.toggle('active', btnText.includes(category) || (category === 'Tümü' && btnText === 'Tümü'));
             });
 
-            if (category === 'Tümü') {
+            const filtered = category === 'Tümü' ? allItems : allItems.filter(item => item.kategori === category);
+            renderItems(filtered);
+        };
+
+        const loadItems = async () => {
+            try {
+                const res = await fetch('/api/pazar');
+                if (!res.ok) throw new Error('API Hatası');
+
+                allItems = await res.json();
                 renderItems(allItems);
-            } else {
-                const filtered = allItems.filter(item => item.kategori === category);
-                renderItems(filtered);
+            } catch (err) {
+                console.error("İlanlar yüklenemedi:", err);
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#dc3545;">İlanlar yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.</div>';
             }
-        }
+        };
 
         document.addEventListener('DOMContentLoaded', loadItems);
     </script>

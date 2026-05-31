@@ -8,7 +8,7 @@ class Enstantane(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     foto = db.Column(db.String(256), nullable=False)
     aciklama = db.Column(db.String(256), nullable=True)
-    tarih = db.Column(db.DateTime, default=datetime.utcnow)
+    tarih = db.Column(db.DateTime, default=datetime.now)
     begeni_sayisi = db.Column(db.Integer, default=0)
     
     # İlişkiler

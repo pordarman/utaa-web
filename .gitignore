@@ -43,11 +43,6 @@ secrets.*
 *.p12
 *.pfx
 
-# Proje özel dosyalar (anahtar, test, veri)
-durak.py
-test_otobus.py
-yemek.xlsx
-
 # IDE ve editör dosyaları
 .vscode/
 .idea/

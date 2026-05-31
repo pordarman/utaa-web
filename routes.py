@@ -1,0 +1,107 @@
+from flask import Blueprint, render_template
+from auth import token_required, is_club_admin, is_admin
+
+# 'pages' adında bir Blueprint oluşturuyoruz
+pages = Blueprint('pages', __name__)
+
+# Admin sayfaları
+@pages.route('/admin')
+@token_required(next_location='/login')
+@is_admin
+def admin_page(current_user):
+    return render_template('admin.html')
+
+# Genel sayfalar
+@pages.route('/')
+def main_page():
+    return render_template('anasayfa.html')
+
+@pages.route('/ders-notlari')
+def ders_notlari_page():
+    return render_template('ders-notlari.html')
+
+@pages.route('/not-ekle')
+@token_required(next_location='/not-ekle')
+def not_ekle_sayfa(current_user):
+    return render_template('not-ekle.html')
+
+@pages.route('/haberler')
+def haberler_page():
+    return render_template('haberler.html')
+
+@pages.route('/duyurular')
+def duyurular_page():
+    return render_template('duyurular.html')
+
+@pages.route('/ofis-saatleri')
+def ofis_saatleri_page():
+    return render_template('ofis-saatleri.html')
+
+@pages.route('/kroki')
+def kroki_page():
+    return render_template('kroki.html')
+
+@pages.route('/kayiplar')
+def kayiplar_page():
+    return render_template('kayiplar.html')
+
+@pages.route('/KampusteHayat')
+def enstantaneler_sayfa():
+    return render_template('enstantaneler.html')
+
+@pages.route('/yemekhane')
+def yemekhane_sayfa():
+    return render_template('yemekhane.html')
+
+@pages.route('/otobus-saatleri')
+def otobus_saatleri_sayfa():
+    return render_template('otobus-saatleri.html')
+
+@pages.route('/forum')
+def forum_sayfa():
+    return render_template('forum.html')
+
+@pages.route('/ogretmen-degerlendirme')
+@token_required(next_location='/ogretmen-degerlendirme')
+def ogretmen_degerlendirme_sayfa(current_user):
+    return render_template('ogretmen-degerlendirme.html')
+
+@pages.route('/ogretmen-listesi')
+def ogretmen_listesi_sayfa():
+    return render_template('ogretmen-listesi.html')
+
+@pages.route('/ilan-ekle')
+@token_required(next_location='/ilan-ekle')
+def ilan_ekle_sayfa(current_user):
+    return render_template('ilan-ekle.html')
+
+@pages.route('/bit-pazari')
+def bit_pazari_sayfa():
+    return render_template('pazar.html')
+
+# Kulüp Sayfaları
+@pages.route('/Kulup-Yonetimi')
+@token_required(next_location='/Kulup-Yonetimi')
+@is_club_admin
+def kulup_yonetimi_sayfa(current_user):
+    return render_template('kulup-yonetimi.html')
+
+@pages.route('/kulupler/kanatlibulten')
+def kanatli_bulten_sayfa():
+    return render_template('kanatlibulten.html')
+    
+@pages.route('/kulupler/utaa-music-club')
+def utaa_music_club_page():
+    return render_template('utaamc.html')
+
+@pages.route('/kulupler/fsource')
+def fsource_page():
+    return render_template('fsource.html')
+
+@pages.route('/kulupler/makine-muhendisligi')
+def makine_muh_page():
+    return render_template('makinemuh.html')
+
+@pages.route('/kulupler/turk-tarih-toplulugu')
+def turk_tarih_page():
+    return render_template('turktarih.html')

@@ -9,5 +9,5 @@ class DersNotu(db.Model):
     dosya_adi = db.Column(db.String(255))  # "algoritma.pdf"
     dosya_yolu = db.Column(db.String(500))  # "uploads/notes/123_algoritma.pdf"
     dosya_tipi = db.Column(db.String(10))   # "pdf" veya "docx"
-    yuklenme_tarihi = db.Column(db.DateTime, default=datetime.utcnow)
+    yuklenme_tarihi = db.Column(db.DateTime, default=datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

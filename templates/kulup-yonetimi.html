@@ -281,7 +281,8 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Doğrudan const atamaları
             const form = document.getElementById('kulupForm');
             const fileInput = document.getElementById('fileInput');
             const fileUploadArea = document.getElementById('fileUploadArea');
@@ -291,15 +292,24 @@
             const errorMessage = document.getElementById('errorMessage');
             const submitBtn = document.getElementById('submitBtn');
 
-            // Dosya seçildiğinde
-            fileInput.addEventListener('change', function () {
-                if (this.files.length > 0) {
-                    fileName.textContent = this.files[0].name;
+            // Güvenlik: XSS Koruması (İsim gösterimi için)
+            const escapeHTML = str => {
+                if (!str) return '';
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' };
+                return String(str).replace(/[&<>'"]/g, tag => map[tag] || tag);
+            };
+
+            const handleFileSelect = (files) => {
+                if (files?.length > 0) {
+                    fileName.textContent = escapeHTML(files[0].name);
                     selectedFile.classList.add('show');
                 }
+            };
+
+            fileInput.addEventListener('change', function () {
+                handleFileSelect(this.files);
             });
 
-            // Drag & drop
             fileUploadArea.addEventListener('dragover', function (e) {
                 e.preventDefault();
                 this.classList.add('dragover');
@@ -312,54 +322,45 @@
             fileUploadArea.addEventListener('drop', function (e) {
                 e.preventDefault();
                 this.classList.remove('dragover');
-                if (e.dataTransfer.files.length > 0) {
+                if (e.dataTransfer.files?.length > 0) {
                     fileInput.files = e.dataTransfer.files;
-                    fileName.textContent = e.dataTransfer.files[0].name;
-                    selectedFile.classList.add('show');
+                    handleFileSelect(e.dataTransfer.files);
                 }
             });
 
-            // Form gönderimi
-            form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                // Mesajları temizle
                 successMessage.classList.remove('show');
                 errorMessage.classList.remove('show');
-
-                // Buton durumunu değiştir
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Yükleniyor...';
 
-                const formData = new FormData(form);
-
-                fetch('/api/kulupler', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.message && data.message.includes('başarıyla')) {
-                            successMessage.textContent = '✓ ' + data.message;
-                            successMessage.classList.add('show');
-
-                            // Formu temizle
-                            form.reset();
-                            selectedFile.classList.remove('show');
-                        } else {
-                            errorMessage.textContent = '✗ ' + (data.message || 'Bir hata oluştu');
-                            errorMessage.classList.add('show');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Hata:', error);
-                        errorMessage.textContent = '✗ Bir hata oluştu. Lütfen tekrar deneyin.';
-                        errorMessage.classList.add('show');
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Fotoğrafı Yükle';
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch('/api/kulupler', {
+                        method: 'POST',
+                        body: formData
                     });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.message?.includes('başarıyla')) {
+                        successMessage.textContent = '✓ ' + escapeHTML(data.message);
+                        successMessage.classList.add('show');
+                        form.reset();
+                        selectedFile.classList.remove('show');
+                    } else {
+                        throw new Error(data.message || 'Bir hata oluştu');
+                    }
+                } catch (error) {
+                    console.error('Hata:', error);
+                    errorMessage.textContent = '✗ ' + escapeHTML(error.message || 'Bir hata oluştu. Lütfen tekrar deneyin.');
+                    errorMessage.classList.add('show');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Fotoğrafı Yükle';
+                }
             });
         });
     </script>
