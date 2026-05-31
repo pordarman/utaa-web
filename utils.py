@@ -163,3 +163,29 @@ def bildirim_gonder(subscription_info, baslik, mesaj, url='/'):
         )
     except WebPushException as ex:
         print(f"Gönderim hatası: {ex}")
+        
+def bildirim_gonder_kullaniciya(user_id, baslik, mesaj, url='/'):
+    """Sadece belirli bir kullanıcıya Push Notification gönderir."""
+    abonelikler = WebPushSubscription.query.filter_by(user_id=user_id).all()
+    if not abonelikler:
+        return
+        
+    payload = json.dumps({
+        "title": baslik,
+        "body": mesaj,
+        "url": url,
+        "icon": "/static/kedi.ico"
+    })
+    
+    for abonelik in abonelikler:
+        try:
+            webpush(
+                subscription_info=json.loads(abonelik.subscription_info),
+                data=payload,
+                vapid_private_key=VAPID_PRIVATE_KEY, 
+                vapid_claims={"sub": "mailto:600tuna@gmail.com"}
+            )
+        except WebPushException as ex:
+            if ex.response and ex.response.status_code == 410:
+                db.session.delete(abonelik)
+                db.session.commit()

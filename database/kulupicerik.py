@@ -2,6 +2,7 @@ from database.initdb import db
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
+
 class Kulupicerik(db.Model):
     __tablename__ = 'kulup_icerik'
     id = db.Column(db.Integer, primary_key=True)

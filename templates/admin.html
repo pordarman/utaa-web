@@ -274,6 +274,9 @@
         <div class="sidebar-title">⚙️ THKÜ Admin</div>
         <button class="nav-btn active" onclick="switchTab('users')">👥 Kullanıcı Yönetimi</button>
         <button class="nav-btn" onclick="switchTab('requests')">📝 Bekleyen İstekler</button>
+        <button class="nav-btn" onclick="switchTab('notes')">📚 Not Onayları</button>
+        <button class="nav-btn" onclick="switchTab('all-notes')">📂 Tüm Notlar</button>
+        <button class="nav-btn" onclick="switchTab('subs')">📧 Abonelikler</button>
         <div style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px;">
             <a href="/" style="text-decoration: none; color: var(--text-muted); font-size: 0.9rem;">← Siteye Dön</a>
         </div>
@@ -329,6 +332,77 @@
                 </table>
             </div>
         </section>
+
+        <section id="notes-panel" class="panel-section">
+            <div class="header">
+                <h1>Ders Notu Onayları</h1>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Öğrenci</th>
+                            <th>Ders Adı</th>
+                            <th>Tarih</th>
+                            <th>Dosya</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="notesTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">Yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="all-notes-panel" class="panel-section">
+            <div class="header">
+                <h1>Tüm Yüklenen Notlar</h1>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ders Adı</th>
+                            <th>Dosya</th>
+                            <th>Tarih</th>
+                            <th>Öğrenci</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allNotesTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">Yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="subs-panel" class="panel-section">
+            <div class="header">
+                <h1>Abonelikler</h1>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ad Soyad</th>
+                            <th>Email</th>
+                            <th>Kayıt Tarihi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subsTableBody">
+                        <tr>
+                            <td colspan="4" class="empty-state">Yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
     </main>
 
     <div class="modal-overlay" id="addUserModal">
@@ -357,24 +431,24 @@
     </div>
 
     <div class="modal-overlay" id="editCreditModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Kredi Düzenle</h2>
-                    <button class="close-btn" onclick="closeEditCreditModal()">&times;</button>
-                </div>
-                <form id="editCreditForm" onsubmit="submitEditCreditForm(event)">
-                    <p id="editCreditUserName" style="margin-bottom: 15px; color: var(--text-muted); font-weight: 500;">
-                    </p>
-                    <input type="hidden" id="editCreditUserId">
-                    <div class="form-group">
-                        <label>Yeni Kredi Miktarı</label>
-                        <input type="number" id="newCreditAmount" required min="0" placeholder="Örn: 5">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;"
-                        id="submitCreditBtn">Krediyi Güncelle</button>
-                </form>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Kredi Düzenle</h2>
+                <button class="close-btn" onclick="closeEditCreditModal()">&times;</button>
             </div>
+            <form id="editCreditForm" onsubmit="submitEditCreditForm(event)">
+                <p id="editCreditUserName" style="margin-bottom: 15px; color: var(--text-muted); font-weight: 500;">
+                </p>
+                <input type="hidden" id="editCreditUserId">
+                <div class="form-group">
+                    <label>Yeni Kredi Miktarı</label>
+                    <input type="number" id="newCreditAmount" required min="0" placeholder="Örn: 5">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;"
+                    id="submitCreditBtn">Krediyi Güncelle</button>
+            </form>
         </div>
+    </div>
 
     <script>
         const usersPanel = document.getElementById('users-panel');
@@ -385,6 +459,12 @@
         const navBtns = document.querySelectorAll('.nav-btn');
         const addUserModal = document.getElementById('addUserModal');
         const editCreditModal = document.getElementById('editCreditModal');
+        const notesPanel = document.getElementById('notes-panel');
+        const notesTableBody = document.getElementById('notesTableBody');
+        const allNotesPanel = document.getElementById('all-notes-panel');
+        const allNotesTableBody = document.getElementById('allNotesTableBody');
+        const subsPanel = document.getElementById('subs-panel');
+        const subsTableBody = document.getElementById('subsTableBody');
 
         const escapeHTML = str => {
             if (!str) return '';
@@ -397,13 +477,25 @@
             event.target.classList.add('active');
             usersPanel.classList.remove('active');
             requestsPanel.classList.remove('active');
+            notesPanel.classList.remove('active');
+            allNotesPanel.classList.remove('active');
+                subsPanel.classList.remove('active');
 
             if (tabName === 'users') {
                 usersPanel.classList.add('active');
                 loadUsers();
-            } else {
+            } else if (tabName === 'requests') {
                 requestsPanel.classList.add('active');
                 loadPendingRequests();
+            } else if (tabName === 'notes') {
+                notesPanel.classList.add('active');
+                loadPendingNotes();
+            } else if (tabName === 'all-notes') {
+                allNotesPanel.classList.add('active');
+                loadAllNotes();
+            } else if (tabName === 'subs') {
+                subsPanel.classList.add('active');
+                loadSubscriptions();
             }
         };
 
@@ -501,7 +593,7 @@
             }
         };
 
-        // Kredi düzenleme fonksiyonları (açma, kapama, submit)
+        /* --- KREDİ DÜZENLEME --- */
         const openEditCreditModal = (id, currentCredit, userName) => {
             document.getElementById('editCreditUserId').value = id;
             document.getElementById('newCreditAmount').value = currentCredit;
@@ -529,14 +621,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ kredi: parseInt(newCredit) })
                 });
-                
+
                 const data = await res.json();
-                
+
                 if (res.ok) {
                     alert('✓ ' + data.message);
                     closeEditCreditModal();
                     // Listeyi arka planda sessizce yenile
-                    loadUsers(document.getElementById('userSearch').value); 
+                    loadUsers(document.getElementById('userSearch').value);
                 } else {
                     alert('HATA: ' + data.message);
                 }
@@ -549,6 +641,7 @@
             }
         };
 
+        /* --- ÖĞRETMEN ONAY İSTEKLERİ --- */
         const loadPendingRequests = async () => {
             try {
                 const res = await fetch('/api/admin/pending-instructors');
@@ -605,10 +698,106 @@
             } catch (e) { console.error(e); }
         };
 
+        /* --- DERS NOTU ONAYLARI --- */
+        const loadPendingNotes = async () => {
+            try {
+                const res = await fetch('/api/admin/pending-notes');
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    notesTableBody.innerHTML = '<tr><td colspan="5" class="empty-state">Onay bekleyen not bulunmuyor. 🎉</td></tr>';
+                    return;
+                }
+
+                notesTableBody.innerHTML = data.map(n => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">${escapeHTML(n.kullanici_ad)}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHTML(n.kullanici_email)}</div>
+                        </td>
+                        <td style="font-weight: 600;">${escapeHTML(n.ders_adi)}</td>
+                        <td>${n.tarih}</td>
+                        <td><a href="${n.dosya_url}" target="_blank" class="btn" style="background:#edf2f7; color:#2d3748; text-decoration:none;">📄 İncele</a></td>
+                        <td class="flex-actions">
+                            <button class="btn btn-success" onclick="approveNote(${n.id})">Kabul Et</button>
+                            <button class="btn btn-danger" onclick="rejectNote(${n.id})">Reddet</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) { console.error(e); }
+        };
+
+        const approveNote = async (id) => {
+            if (!confirm('Bu notu onaylayıp öğrenciye 2 kredi vermek istiyor musunuz?')) return;
+            try {
+                const res = await fetch(`/api/admin/approve-note/${id}`, { method: 'POST' });
+                if (res.ok) loadPendingNotes();
+                else alert('Hata oluştu!');
+            } catch (e) { console.error(e); }
+        };
+
+        const rejectNote = async (id) => {
+            if (!confirm('Bu notu reddetmek istiyor musunuz? (Öğrenciye bildirim gidecek)')) return;
+            try {
+                const res = await fetch(`/api/admin/reject-note/${id}`, { method: 'POST' });
+                if (res.ok) loadPendingNotes();
+                else alert('Hata oluştu!');
+            } catch (e) { console.error(e); }
+        };
+
+        /* --- TÜM NOTLAR --- */
+        const loadAllNotes = async () => {
+            try {
+                const res = await fetch('/api/admin/notlar');
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    allNotesTableBody.innerHTML = '<tr><td colspan="6" class="empty-state">Henüz not yüklenmemiş. 🎉</td></tr>';
+                    return;
+                }
+
+                allNotesTableBody.innerHTML = data.map(n => `
+                    <tr>
+                        <td>#${n.id}</td>
+                        <td style="font-weight: 600;">${escapeHTML(n.ders_adi)}</td>
+                        <td><a href="${n.dosya_url}" target="_blank" class="btn" style="background:#edf2f7; color:#2d3748; text-decoration:none;">📄 İncele</a></td>
+                        <td>${n.tarih}</td>
+                        <td style="font-weight: 500;">${escapeHTML(n.kullanici_ad)}</td>
+                        <td style="color: var(--text-muted); font-size: 0.8rem;">${escapeHTML(n.kullanici_email)}</td>
+                    </tr>
+                `).join('');
+            } catch (e) { console.error(e); }
+        };
+
+        /* --- ABONELİKLER --- */
+        const loadSubscriptions = async () => {
+            try {
+                const res = await fetch('/api/admin/subscriptions');
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    subsTableBody.innerHTML = '<tr><td colspan="4" class="empty-state">Henüz abonelik yok. 🎉</td></tr>';
+                    return;
+                }
+
+                subsTableBody.innerHTML = data.map(s => `
+                    <tr>
+                        <td>#${s.id}</td>
+                        <td style="font-weight: 500;">${escapeHTML(s.name)}</td>
+                        <td style="color: var(--text-muted); font-size: 0.8rem;">${escapeHTML(s.email)}</td>
+                        <td>${s.created_at}</td>
+                    </tr>
+                `).join('');
+            } catch (e) { console.error(e); }
+        };
+
         // Modal dışına tıklayınca kapatma
         window.onclick = function (event) {
             if (event.target == editCreditModal) closeEditCreditModal();
             if (event.target == addUserModal) closeAddUserModal();
+            if (event.target == notesPanel) loadPendingNotes();
+            if (event.target == allNotesPanel) loadAllNotes();
+            if (event.target == subsPanel) loadSubscriptions();
         }
 
         // Arama (Debounce ile)
