@@ -1,10 +1,10 @@
-from database.initdb import db
 import os
-
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from backend import app
+from database.initdb import db
 
 from database.dersnotu import DersNotu, DersNotuBekleyen
 from database.user import User
