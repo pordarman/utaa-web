@@ -361,6 +361,7 @@
             <div class="header">
                 <h1>Tüm Yüklenen Notlar</h1>
             </div>
+            <input type="text" id="notesSearch" class="search-box" placeholder="Öğrenci adı, ders adı veya email ile ara...">
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
@@ -371,11 +372,12 @@
                             <th>Tarih</th>
                             <th>Öğrenci</th>
                             <th>Email</th>
+                            <th>İşlem</th>
                         </tr>
                     </thead>
                     <tbody id="allNotesTableBody">
                         <tr>
-                            <td colspan="5" class="empty-state">Yükleniyor...</td>
+                            <td colspan="7" class="empty-state">Yükleniyor...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -461,6 +463,7 @@
         const editCreditModal = document.getElementById('editCreditModal');
         const notesPanel = document.getElementById('notes-panel');
         const notesTableBody = document.getElementById('notesTableBody');
+        const notesSearch = document.getElementById('notesSearch');
         const allNotesPanel = document.getElementById('all-notes-panel');
         const allNotesTableBody = document.getElementById('allNotesTableBody');
         const subsPanel = document.getElementById('subs-panel');
@@ -479,7 +482,7 @@
             requestsPanel.classList.remove('active');
             notesPanel.classList.remove('active');
             allNotesPanel.classList.remove('active');
-                subsPanel.classList.remove('active');
+            subsPanel.classList.remove('active');
 
             if (tabName === 'users') {
                 usersPanel.classList.add('active');
@@ -555,7 +558,6 @@
             addUserModal.classList.remove('active');
             document.getElementById('addUserForm').reset();
         };
-
         const submitAddUserForm = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitUserBtn');
@@ -701,7 +703,7 @@
         /* --- DERS NOTU ONAYLARI --- */
         const loadPendingNotes = async () => {
             try {
-                const res = await fetch('/api/admin/pending-notes');
+                const res = await fetch(`/api/admin/pending-notes`);
                 const data = await res.json();
 
                 if (data.length === 0) {
@@ -746,17 +748,17 @@
         };
 
         /* --- TÜM NOTLAR --- */
-        const loadAllNotes = async () => {
+        const loadAllNotes = async (query = '') => {
             try {
-                const res = await fetch('/api/admin/notlar');
+                const res = await fetch(`/api/admin/notlar${query ? `?q=${encodeURIComponent(query)}` : ''}`);
                 const data = await res.json();
 
                 if (data.length === 0) {
-                    allNotesTableBody.innerHTML = '<tr><td colspan="6" class="empty-state">Henüz not yüklenmemiş. 🎉</td></tr>';
+                    allNotesTableBody.innerHTML = '<tr><td colspan="7" class="empty-state">Henüz not yüklenmemiş. 🎉</td></tr>';
                     return;
                 }
 
-                allNotesTableBody.innerHTML = data.map(n => `
+                allNotesTableBody.innerHTML = data.sort((a, b) => new Date(b.tarih) - new Date(a.tarih)).map(n => `
                     <tr>
                         <td>#${n.id}</td>
                         <td style="font-weight: 600;">${escapeHTML(n.ders_adi)}</td>
@@ -764,8 +766,19 @@
                         <td>${n.tarih}</td>
                         <td style="font-weight: 500;">${escapeHTML(n.kullanici_ad)}</td>
                         <td style="color: var(--text-muted); font-size: 0.8rem;">${escapeHTML(n.kullanici_email)}</td>
+                        <td class="flex-actions">
+                            <button class="btn btn-danger" onclick="deleteNote(${n.id})">Sil</button>
+                        </td>
                     </tr>
                 `).join('');
+            } catch (e) { console.error(e); }
+        };
+        const deleteNote = async (id) => {
+            if (!confirm('Bu notu kalıcı olarak silmek istediğinize emin misiniz?')) return;
+            try {
+                const res = await fetch(`/api/admin/notlar/${id}`, { method: 'DELETE' });
+                if (res.ok) loadAllNotes();
+                else alert('Hata oluştu!');
             } catch (e) { console.error(e); }
         };
 
@@ -801,11 +814,18 @@
         }
 
         // Arama (Debounce ile)
-        let timeout;
+        let timeout_user;
         userSearch.addEventListener('input', (e) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => loadUsers(e.target.value), 300);
+            clearTimeout(timeout_user);
+            timeout_user = setTimeout(() => loadUsers(e.target.value), 300);
         });
+
+        let timeout_notes;
+        notesSearch.addEventListener('input', (e) => {
+            clearTimeout(timeout_notes);
+            timeout_notes = setTimeout(() => loadPendingNotes(e.target.value), 300);
+        });
+        
 
         // Sayfa yüklendiğinde kullanıcıları çek
         document.addEventListener('DOMContentLoaded', () => loadUsers());

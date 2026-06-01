@@ -1168,17 +1168,29 @@ def reject_note(current_user, id):
 @token_required()
 @is_admin
 def get_all_notes(current_user):
+    query = request.args.get('q', '').lower()
+    
     notes = db.session.query(DersNotu, User.name, User.email)\
-        .join(User, DersNotu.user_id == User.id).all()
+        .join(User, DersNotu.user_id == User.id)\
+        .filter(db.or_(DersNotu.ders_adi.contains(query), User.name.contains(query), User.email.contains(query))).all()
         
     return jsonify([{
         'id': n[0].id,
         'ders_adi': n[0].ders_adi,
         'dosya_url': f"/uploads/notes/{n[0].dosya_adi}",
-        'tarih': n[0].yuklenme_tarihi.strftime("%d.%m.%Y %H:%M"),
+        'tarih': n[0].yuklenme_tarihi,
         'kullanici_ad': n[1],
         'kullanici_email': n[2]
     } for n in notes])
+    
+@api_bp.delete('/api/admin/notlar/<int:id>')
+@token_required()
+@is_admin
+def delete_note(current_user, id):
+    note = DersNotu.query.get_or_404(id)
+    db.session.delete(note)
+    db.session.commit()
+    return jsonify({'message': 'Not başarıyla silindi!'}), 200
     
 @api_bp.get('/api/admin/subscriptions')
 @token_required()
