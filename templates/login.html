@@ -163,7 +163,7 @@
     <h1>Giriş Yap</h1>
     <p class="subtitle">THKÜ Öğrenci Ofis Sistemi</p>
 
-    <form method="POST" action="{{ request.full_path }}" id="loginForm">
+    <form id="loginForm">
       <div class="form-group">
         <label for="email">Öğrenci E-postası</label>
         <input type="email" id="email" name="email" required placeholder="s123456789@stu.thk.edu.tr">
@@ -194,19 +194,45 @@
       return re.test(email);
     }
 
-    function submitForm(event) {
+    async function submitForm(event) {
+      event.preventDefault();
+
       const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
       const email = emailInput.value.trim();
 
       if (!validateEmail(email)) {
-        event.preventDefault();
-
         alert('Lütfen geçerli bir THKÜ öğrenci e-postası kullanın (@stu.thk.edu.tr)');
         emailInput.focus();
         return false;
       }
 
-      return true;
+      const form = document.getElementById('loginForm');
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch("/login", {
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin'
+        });
+
+        if (response.redirected) {
+          window.location.href = response.url;
+          return;
+        }
+
+        if (response.ok) {
+          window.location.reload();
+          return;
+        }
+
+        const errorData = await response.json();
+        alert(`Giriş başarısız. ${errorData.message || 'Lütfen bilgilerinizi kontrol edin.'}`);
+        passwordInput.focus();
+      } catch (error) {
+        alert('Sunucuya bağlanılamadı.');
+      }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
